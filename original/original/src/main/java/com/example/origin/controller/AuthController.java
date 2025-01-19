@@ -1,0 +1,33 @@
+package com.example.origin.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+
+public class AuthController {
+	  @GetMapping("/login")
+	    public String login() {
+	        return "auth/login";
+	    }   
+	  
+	  @GetMapping("/signup")
+	    public String signup() {
+	        return "auth/signup";
+	    }   
+	  
+	  @GetMapping("/passedit")
+	    public String passedit() {
+	        return "auth/passedit";
+	    }   
+	  
+	  @GetMapping("/passreset")
+	    public String passreset() {
+	        return "auth/passreset";
+	    }   
+	  
+	  @GetMapping("/verify")
+	    public String verify() {
+	        return "auth/verify";
+	    }  
+}

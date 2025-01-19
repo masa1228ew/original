@@ -1,0 +1,34 @@
+package com.example.origin.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/data")
+public class DataController {
+	  @GetMapping("/")
+	    public String index() {
+	        return "data/index";
+	    }   
+	  
+	  @GetMapping("/register")
+	    public String register() {
+	        return "data/register";
+	    }  
+	  
+	  @GetMapping("/high")
+	    public String high() {
+	        return "data/high";
+	    }  
+	  
+	  @GetMapping("/amount")
+	    public String amount() {
+	        return "data/amount";
+	    }  
+	  
+	  @GetMapping("/edit")
+	    public String edit() {
+	        return "data/edit";
+	    }  
+}

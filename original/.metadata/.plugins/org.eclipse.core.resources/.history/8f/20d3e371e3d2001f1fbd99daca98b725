@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       
+           <link th:href="@{/css/style.css}" rel="stylesheet" >	
+		<title>現在の高さ</title>
+	</head>
+	<body>
+		<div class="wrapper">
+			<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm ">
+               <div class="container ">
+                   <a class="navbar-brand" th:href="@{/}">                        
+                       ロゴ                        
+                   </a>                                                                    
+               </div>
+           </nav>
+			<main>
+				<div class="container pt-4 pb-5">
+					<div>
+						<h1>現在の高さは</h1>
+					</div>
+					
+					<div>
+						<h1>計算した数字（センチメートル）</h1>
+					</div>
+					
+					<div>
+						<h1>です</h1>
+					</div>
+				</div>
+				<div>
+					<p>ランダムで選択する</p>
+				</div>
+				<div>
+					<p>戻る</p>
+				</div>
+			</main>
+	</body>
+</html>

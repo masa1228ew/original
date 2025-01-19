@@ -1,0 +1,25 @@
+<div class="container pt-4 pb-5">
+					<h1>データベースを編集</h1>
+					
+					<form method="post" >
+								<div class="form-group row mb-3">
+									<div class="col-md-4">
+										<label for="name" class="col-form-label text-md-left fw-bold">テーブル名</label>
+									</div>
+									<div class="col-md-8">
+										<div  class="text-danger small mb-2"></div>
+										<input type="text" class="form-control"  autofocus>
+									</div>
+									<div>
+										<h3>カテゴリを選択</h3>
+									</div>
+								</div>
+								   <div class="form-group d-flex justify-content-center my-4">
+									 <button type="submit" class="btn text-white shadow-sm w-50 samuraitravel-btn">追加</button>
+								 </div>       
+							</form>
+				</div>
+			</main>
+		</div>
+	</body>
+</html>
