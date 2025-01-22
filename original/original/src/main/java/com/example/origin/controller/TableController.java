@@ -1,16 +1,50 @@
 package com.example.origin.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.origin.form.CollectionRegisterForm;
+import com.example.origin.repository.CollectionRepository;
+import com.example.origin.service.CollectionService;
 
 @Controller
 @RequestMapping("/table")
 public class TableController {
-	@GetMapping("/register")
-    public String register() {
-        return "table/register";
-    }  
+	private final CollectionRepository collectionRepository;
+	public final CollectionService collectionService;
+	
+	public TableController(CollectionRepository collectionRepository
+							,CollectionService collectionService) {
+		this.collectionRepository = collectionRepository;
+		this.collectionService = collectionService;
+	}
+	
+	  @GetMapping("/register")
+	    public String register(Model model) {
+	        model.addAttribute("collectionRegisterForm", new CollectionRegisterForm());
+	        return "table/register";
+	    }  
+	  
+	@PostMapping("/create")
+    public String create(@ModelAttribute @Validated CollectionRegisterForm collectionRegisterForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
+        if (bindingResult.hasErrors()) {
+            return "table/register";
+        }
+        
+        collectionService.create(collectionRegisterForm);
+        redirectAttributes.addFlashAttribute("successMessage", "コレクションを登録しました。");    
+        
+        return "redirect:/table";
+    }    
+	
+	
 	
 	@GetMapping("/edit")
     public String edit() {

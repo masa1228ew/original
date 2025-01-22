@@ -11,13 +11,8 @@
 	</head>
 	<body>
 		<div class="wrapper">
-			<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm ">
-               <div class="container ">
-                   <a class="navbar-brand" th:href="@{/}">                        
-                       ロゴ                        
-                   </a>                                                                    
-               </div>
-           </nav>
+			 <div th:replace="~{fragment :: header}"></div>
+			
 			<main>
 				<div class="container pt-4 pb-5">
 					  <div th:if="${param.loggedIn}" class="alert alert-info">
@@ -27,18 +22,22 @@
                      <div th:if="${param.loggedOut}" class="alert alert-info">
                          ログアウトしました。
                      </div>
-                         <div th:if="${successMessage}" class="alert alert-info">
-                         <span th:text="${successMessage}"></span>
-                     </div> 
+                      <div th:if="${successMessage}" class="alert alert-info">
+                        <span th:text="${successMessage}"></span>
+                    </div>      
+                          
                       <div class="d-flex justify-content-center">                                            
                         <h1>あなたのデータベース</h1>
                                         
                      </div> 
                      <div class="right">
 						 <div>
-						 <a>データベースを追加する</a>
+						  <a th:href="@{/table/register}" class="btn  shadow-sm mb-3 samuraitravel-btn">登録</a>
 					 </div>
 					 
+				 <div th:if="${successMessage}" class="alert alert-info">
+                                <span th:text="${successMessage}"></span>
+                            </div>   
 						 <div>
 					  <form method="get" class="mb-3 samuraitravel-sort-box"> 
                                      <input  type="hidden" name="keyword" >
@@ -60,8 +59,8 @@
                                    </tr>
                                </thead>   
                                <tbody>                                                     
-                                   <tr >
-                                       <td ></td>
+                                   <tr  th:each="collection : ${collectionPage}">
+                                       <td th:text="${collection.getName()}"></td>
                                        
                                        <td><a href="#">詳細</a></td>                                                                                
                                    </tr>                                      
@@ -69,20 +68,20 @@
                            </table> 
                            
                             <!-- ページネーション -->
-                             <div  class="d-flex justify-content-center">
+                             <div  th:if="${collectionPage.getTotalPages() > 1}"class="d-flex justify-content-center">
                                  <nav aria-label="テーブル一覧ページ">
                                      <ul class="pagination">
                                          <li class="page-item">
-                                             <span t class="page-link disabled">前</span>
-                                             <a   class="page-link samuraitravel-page-link">前</a>
+                                             <span  th:if="${collectionPage.isFirst()}" class="page-link disabled">前</span>
+                                             <a   th:unless="${collectionPage.isFirst()}"th:href="@{/table(page = ${collectionPage.getNumber() - 1})}"  class="page-link samuraitravel-page-link">前</a>
                                          </li>
-                                         <li  class="page-item">
-                                             <span  class="page-link active samuraitravel-active" ></span>
-                                             <a  class="page-link samuraitravel-page-link"></a>
+                                         <li  th:each="i : ${#numbers.sequence(0, collectionPage.getTotalPages() - 1)}" class="page-item">
+                                             <span  th:if="${i == collectionPage.getNumber()}" class="page-link active samuraitravel-active" ></span>
+                                             <a   th:unless="${i == collectionPage.getNumber()}" class="page-link samuraitravel-page-link"></a>
                                          </li>
                                          <li class="page-item">                        
-                                             <span  class="page-link disabled">次</span>
-                                              <a   class="page-link samuraitravel-page-link">次</a>
+                                             <span  th:if="${collectionPage.isLast()}" class="page-link disabled">次</span>
+                                              <a    th:unless="${collectionPage.isLast()}" th:href="@{/table(page = ${collectionPage.getNumber() + 1})}" class="page-link samuraitravel-page-link">次</a>
                                          </li>
                                      </ul>
                                  </nav> 

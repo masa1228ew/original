@@ -7,8 +7,9 @@
            <link th:href="@{/css/style.css}" rel="stylesheet" >	  
 		<title>メール認証</title>
 	</head>
-	<div class="wrapper"></div>
-	
+	<body>
+	<div class="wrapper">
+	  <div th:replace="~{fragment :: header}"></div>
 	<main>
 		<div class="container pt-4 pb-5">
 			<div class="row justify-content-center">
@@ -16,7 +17,7 @@
 					<div th:if="${successMessage}" class="alert alert-info">
                                  <span th:text="${successMessage}"></span>
                              </div> 
-                             
+                            
                              <div th:if="${errorMessage}" class="alert alert-danger">
                                  <span th:text="${errorMessage}"></span>
                              </div>
@@ -25,4 +26,7 @@
 			</div>
 		</div>
 	</main>
+	<div th:replace="~{fragment :: scripts}"></div>
+	</div>
+	</body>
 </html>

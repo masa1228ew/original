@@ -1,0 +1,22 @@
+package com.example.origin.security;
+
+import org.springframework.stereotype.Service;
+
+import com.example.origin.form.CollectionRegisterForm;
+import com.example.origin.repository.CollectionRepository;
+
+import jakarta.transaction.Transactional;
+
+@Service
+public class CollectionService {
+	private final CollectionRepository collectionRepository;
+	public CollectionService(CollectionRepository collectionRepository) {
+		this.collectionRepository = collectionRepository;
+	}
+	@Transactional
+	public void create(CollectionRegisterForm collectionRegisterForm) {
+	collection.setName(collectionRegisterForm.getName());
+	
+	collectionRepository.save(collection);
+}
+}

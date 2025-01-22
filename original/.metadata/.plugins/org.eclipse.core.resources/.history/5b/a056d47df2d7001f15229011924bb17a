@@ -1,0 +1,9 @@
+package com.example.origin.service;
+
+public class VerificationTokenService {
+
+	public VerificationTokenService() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+}

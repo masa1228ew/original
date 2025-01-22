@@ -1,0 +1,9 @@
+package com.example.origin.service;
+
+public class PassService {
+
+	public PassService() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+}

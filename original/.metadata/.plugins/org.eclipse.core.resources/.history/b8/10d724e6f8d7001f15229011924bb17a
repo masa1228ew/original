@@ -1,0 +1,9 @@
+package com.example.origin.form;
+
+public class PasswordEditForm {
+
+	public PasswordEditForm() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+}

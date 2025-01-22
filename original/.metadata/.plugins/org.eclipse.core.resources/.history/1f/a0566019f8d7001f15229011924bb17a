@@ -1,0 +1,18 @@
+package com.example.origin.service;
+
+@Service
+public class PassService {
+	@Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+	}
+
+}

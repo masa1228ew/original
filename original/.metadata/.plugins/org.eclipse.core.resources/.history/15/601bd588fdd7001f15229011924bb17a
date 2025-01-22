@@ -1,0 +1,5 @@
+INSERT IGNORE INTO roles (id, name) VALUES (1, 'ROLE_GENERAL');
+INSERT IGNORE INTO users (id, email, password,role_id, enabled) VALUES (1,'taro.samurai@example.com','$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO',1,1);
+
+INSERT IGNORE INTO genre (id, name) VALUES (1, 'ゲーム');
+INSERT IGNORE INTO  collection(id, name,genre_id,user_id,created_at,updated_at) VALUES (1, '積みゲー',1,1,'2023-04-01','2023-04-20','2023-04-20');

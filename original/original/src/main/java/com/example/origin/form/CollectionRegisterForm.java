@@ -1,0 +1,14 @@
+package com.example.origin.form;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class CollectionRegisterForm {
+	@NotBlank(message = "コレクション名を入力してください。")
+    private String name;
+	
+	 @NotNull(message = "カテゴリを入力してください。")
+     private Integer  genre;  
+}

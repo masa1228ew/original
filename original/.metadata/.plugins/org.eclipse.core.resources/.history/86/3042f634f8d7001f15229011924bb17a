@@ -1,0 +1,5 @@
+package com.example.origin.repository;
+
+public interface PasswordResetTokenRepository {
+
+}

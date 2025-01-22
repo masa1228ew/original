@@ -1,0 +1,9 @@
+package com.example.origin.entity;
+
+public class Collection {
+
+	public Collection() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+}

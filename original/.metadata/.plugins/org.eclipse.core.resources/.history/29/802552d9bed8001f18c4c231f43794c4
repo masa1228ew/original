@@ -1,0 +1,31 @@
+package com.example.origin.controller;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.example.origin.entity.Collection;
+import com.example.origin.repository.CollectionRepository;
+
+@Controller
+public class HomeController {
+private final CollectionRepository collectionRepository;
+	
+	public HomeController(CollectionRepository collectionRepository) {
+		this.collectionRepository = collectionRepository;
+	}
+	
+	
+	 @GetMapping
+	 public String index(Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable) {
+	        Page<Collection> collectionPage = collectionRepository.findAll(pageable);       
+	        
+	        model.addAttribute("collectionPage", collectionPage);             
+	        
+	        return "index";
+	    }  
+	 
+     
+}

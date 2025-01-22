@@ -1,0 +1,29 @@
+package com.example.origin.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.origin.repository.CollectionRepository;
+
+@Controller
+@RequestMapping("/table")
+public class TableController {
+	private final CollectionRepository collectionRepository;
+	
+	public TableController(CollectionRepository collectionRepository) {
+		this.collectionRepository = collectionRepository;
+	}
+	
+	
+	
+	@GetMapping("/register")
+    public String register() {
+        return "table/register";
+    }  
+	
+	@GetMapping("/edit")
+    public String edit() {
+        return "table/edit";
+    }   
+}

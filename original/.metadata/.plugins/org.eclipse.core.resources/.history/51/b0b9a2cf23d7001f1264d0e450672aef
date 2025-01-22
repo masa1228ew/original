@@ -1,0 +1,5 @@
+package com.example.origin.entity;
+
+public class User {
+
+}
