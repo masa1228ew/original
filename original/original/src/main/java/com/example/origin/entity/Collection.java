@@ -39,4 +39,8 @@ public class Collection {
 	 @Column(name="updated_at",insertable=false,updatable=false)
 	 private Timestamp updatedAt;
 
+	 @Override
+	 public String toString() {
+		 return "Collection [id = "+ id +",name="+name+"]";
+	 }
 }

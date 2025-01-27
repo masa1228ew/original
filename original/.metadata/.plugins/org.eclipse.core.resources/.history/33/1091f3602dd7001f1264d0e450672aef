@@ -1,1 +1,0 @@
-INSERT IGNORE INTO users (id, email, password,role_id, enabled) VALUES (1,'taro.samurai@example.com','$2a$10$2JNjTwZBwo7fprL2X4sv.OEKqxnVtsVQvuXDkI8xVGix.U3W5B7CO',1,0);

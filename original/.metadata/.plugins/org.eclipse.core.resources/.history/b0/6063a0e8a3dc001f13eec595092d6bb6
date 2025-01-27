@@ -1,0 +1,23 @@
+package com.example.origin.service;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+public class DatasService {
+
+	public void insertData(int collectionId, String itemName, int genreId, double purchasePrice) throws Exception {
+        String query = "INSERT INTO data (collection_id, item_name, genre_id, purchase_price) VALUES (?, ?, ?, ?)";
+
+        try (Connection connection = DatabaseUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setInt(1, collectionId);
+            preparedStatement.setString(2, itemName);
+            preparedStatement.setInt(3, genreId);
+            preparedStatement.setDouble(4, purchasePrice);
+
+            preparedStatement.executeUpdate();
+        }
+    }
+
+}

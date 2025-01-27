@@ -1,0 +1,9 @@
+package com.example.origin.service;
+
+public class DatasService {
+
+	public DatasService() {
+		// TODO 自動生成されたコンストラクター・スタブ
+	}
+
+}

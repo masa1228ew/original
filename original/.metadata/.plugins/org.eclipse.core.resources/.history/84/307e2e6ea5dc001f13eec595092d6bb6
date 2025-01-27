@@ -1,0 +1,16 @@
+package com.example.origin.service;
+
+import com.example.origin.repository.DatasRepository;
+
+
+public class DatasService {
+
+	private final DatasRepository DatasRepository;
+	
+	public DatasService(DatasRepository DatasRepository) {
+		this.datasRepository = datasRepository;
+	}
+	 public void saveData(Data data) {
+	        datasRepository.save(data);
+	    }
+}

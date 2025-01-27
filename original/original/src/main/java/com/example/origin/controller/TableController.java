@@ -1,5 +1,6 @@
 package com.example.origin.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,38 +11,48 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.origin.entity.User;
 import com.example.origin.form.CollectionRegisterForm;
 import com.example.origin.repository.CollectionRepository;
+import com.example.origin.repository.UserRepository;
+import com.example.origin.security.UserDetailsImpl;
 import com.example.origin.service.CollectionService;
 
 @Controller
 @RequestMapping("/table")
 public class TableController {
 	private final CollectionRepository collectionRepository;
-	public final CollectionService collectionService;
+	private final CollectionService collectionService;
+	private final UserRepository userRepository;
 	
 	public TableController(CollectionRepository collectionRepository
-							,CollectionService collectionService) {
+							,CollectionService collectionService
+							,UserRepository userRepository) {
 		this.collectionRepository = collectionRepository;
 		this.collectionService = collectionService;
+		this.userRepository = userRepository;
 	}
 	
 	  @GetMapping("/register")
 	    public String register(Model model) {
+		 
 	        model.addAttribute("collectionRegisterForm", new CollectionRegisterForm());
 	        return "table/register";
 	    }  
 	  
 	@PostMapping("/create")
-    public String create(@ModelAttribute @Validated CollectionRegisterForm collectionRegisterForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
+    public String create(@ModelAttribute @Validated CollectionRegisterForm collectionRegisterForm, BindingResult bindingResult,
+    		RedirectAttributes redirectAttributes,
+            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+		User user = userDetailsImpl.getUser();
         if (bindingResult.hasErrors()) {
             return "table/register";
         }
         
-        collectionService.create(collectionRegisterForm);
+        collectionService.create(collectionRegisterForm,user);
         redirectAttributes.addFlashAttribute("successMessage", "コレクションを登録しました。");    
         
-        return "redirect:/table";
+        return "redirect:/collections";
     }    
 	
 	

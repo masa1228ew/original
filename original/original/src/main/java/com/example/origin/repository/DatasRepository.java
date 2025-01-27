@@ -1,0 +1,11 @@
+package com.example.origin.repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.origin.entity.Datas;
+
+public interface DatasRepository extends JpaRepository<Datas, Integer>{
+	public Page<Datas> findAll(Pageable pageable);
+}

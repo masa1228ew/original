@@ -1,15 +1,63 @@
 package com.example.origin.controller;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.example.origin.entity.Collection;
+import com.example.origin.entity.Datas;
+import com.example.origin.repository.CollectionRepository;
+import com.example.origin.repository.DatasRepository;
+import com.example.origin.repository.GenreRepository;
+import com.example.origin.service.DatasService;
+import com.example.origin.service.GenreService;
 
 @Controller
 @RequestMapping("/data")
 public class DataController {
-	  @GetMapping("/")
-	    public String index() {
-	        return "data/index";
+	private final DatasRepository datasRepository;
+	private final CollectionRepository collectionRepository;
+	private final GenreRepository genreRepository;
+	private final DatasService datasService;
+	private final GenreService genreService;
+	
+	public DataController(DatasRepository datasRepository
+						,CollectionRepository collectionRepository
+						,GenreRepository genreRepository
+						,DatasService datasService
+						,GenreService genreService) {
+		this.datasRepository = datasRepository;
+		this.collectionRepository = collectionRepository;
+		this.genreRepository = genreRepository;
+		this.datasService = datasService;
+		this.genreService = genreService;
+	}
+	  @GetMapping("/{id}")
+	    public String index(@PathVariable(name = "id") Integer id,Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable) {
+		  System.out.println("テスト");
+		  Collection collectionId = collectionRepository.getReferenceById(id);
+		  Page<Datas> datasPage = datasRepository.findAll(pageable);
+		  List<Datas> datas = datasService.getAllData();
+		  datas.forEach(data -> {
+	            Collection collection = data.getCollection();
+	            List<?> genres = genreService.getGenresByCollection(collection);
+	            // 必要に応じてモデルやデータにジャンル情報を設定
+	        });
+		  System.out.println("テスト2");
+		  model.addAttribute("datas", datas); 
+		  model.addAttribute("datasPage", datasPage);
+		  model.addAttribute("collection", collectionId); 
+		  System.out.println("テスト3");
+//		  System.out.println(datasPage);
+	        return "data/show";
 	    }   
 	  
 	  @GetMapping("/register")

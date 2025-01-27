@@ -1,0 +1,18 @@
+package com.example.origin.service;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+@Service
+public class GenreService {
+private final GenreRepository genreRepository;
+
+public GenreService(GenreRepository genreRepository) {
+	this.genreRepository = genreRepository;
+}
+	
+public List<Genre> getAllGenres() {
+    return genreRepository.findAll();
+}
+}

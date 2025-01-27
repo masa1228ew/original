@@ -1,0 +1,37 @@
+package com.example.origin.repository;
+
+import java.util.List;
+
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.example.origin.entity.Collection;
+
+@Repository
+public interface CustomCollectionRepository {
+	public static final NamedParameterJdbcTemplate template = null;
+
+	 public CustomCollectionRepository(NamedParameterJdbcTemplate template) {
+	        this.template = template;
+	    }
+	public final static RowMapper<Collection>COLLECTION_ROW_MAPPER=(rs,i)->{
+			Collection collection = new Collection();
+			collection.setId(rs.getInt("id"));
+			collection.setName(rs.getString("name"));
+			return collection;
+	};
+
+	public static  List<Collection> findAllCollections(String sort_fg){
+		StringBuilder sql=new StringBuilder();
+		
+		if("1".equals(sort_fg)) {
+			sql.append("select id,name from items order by CreatedAd desc");
+		}else if("2".equals(sort_fg)) {
+			sql.append("select id,name from items order by name asc");
+		}
+		
+		List<Collection>collectionList=template.query(sql.toString(),COLLECTION_ROW_MAPPER);
+		return collectionList;
+	}
+}

@@ -48,3 +48,30 @@ CREATE TABLE IF NOT EXISTS password_tokens (
      
  );
  
+ CREATE TABLE IF NOT EXISTS  game(
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     genre_name VARCHAR(50) NOT NULL
+ );
+ 
+  CREATE TABLE IF NOT EXISTS  book(
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     genre_name VARCHAR(50) NOT NULL
+ );
+ 
+  CREATE TABLE IF NOT EXISTS  movie(
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     genre_name VARCHAR(50) NOT NULL
+ );
+ 
+  CREATE TABLE IF NOT EXISTS  datas(
+     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255) NOT NULL,
+     collection_id INT NOT NULL,
+     genre_id INT NOT NULL,
+     price INT NOT NULL,
+     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          FOREIGN KEY (collection_id) REFERENCES collection (id),
+          FOREIGN KEY (genre_id) REFERENCES genre (id)
+     
+ );

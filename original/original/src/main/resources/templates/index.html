@@ -35,19 +35,40 @@
 						  <a th:href="@{/table/register}" class="btn  shadow-sm mb-3 samuraitravel-btn">登録</a>
 					 </div>
 					 
-				 <div th:if="${successMessage}" class="alert alert-info">
-                                <span th:text="${successMessage}"></span>
-                            </div>   
+				   
 						 <div>
-					  <form method="get" class="mb-3 samuraitravel-sort-box"> 
-                                     <input  type="hidden" name="keyword" >
-                                     <input  type="hidden" name="area" >
-                                     <input  type="hidden" name="price" >                                      
-                                     <select class="form-select form-select-sm" name="order" onChange="this.form.submit();">
-                                         <option value="createdAtDesc" >新着順</option>                                            
-                                         <option value="priceAsc">宿泊料金が安い順</option>
-                                     </select>   
-                                 </form> 
+<!--					  <form th:action="@{/collection_list}" method="post" class="mb-3 samuraitravel-sort-box"> -->
+                                                                          
+<!--                                     <select class="form-select form-select-sm" name="order" onChange="this.form.submit();">-->
+<!--                                         <option th:each="sort:${sortList}" th:value="${sort.key}" th:text="${sort.value}" th:selected="${sort.key==selectedValue}"></option>                                            -->
+<!--                                         <option value="NameAsc">五十音順-->
+<!--										 </option>-->
+<!--                                     </select>   -->
+<!--                                 </form> -->
+
+<form action="/collections" method="get">
+    <select name="sortBy">
+        <option value="name" th:selected="${sortBy == 'name'}">名前順</option>
+        <option value="createdAt" th:selected="${sortBy == 'createdAt'}">作成日順</option>
+    </select>
+    <select name="direction">
+        <option value="asc" th:selected="${direction == 'asc'}">昇順</option>
+        <option value="desc" th:selected="${direction == 'desc'}">降順</option>
+    </select>
+    <button type="submit">並べ替え</button>
+</form>
+<!--                                 <p th:text="itemListの中身【+${itemList}+】"></p>-->
+<!--                                 <hr>-->
+                                 
+<!--                                 <table>-->
+<!--									 <tbody>-->
+<!--										 <tr>-->
+<!--											 <td th:each="item:${itemList}">-->
+<!--												 <span th:text="'('+${item.name}+')'"></span>-->
+<!--											 </td>-->
+<!--										 </tr>-->
+<!--									 </tbody>-->
+<!--								 </table>-->
 						 </div> 
 					 </div>
                                   <table class="table">
@@ -62,18 +83,19 @@
                                    <tr  th:each="collection : ${collectionPage}">
                                        <td th:text="${collection.getName()}"></td>
                                        
-                                       <td><a href="#">詳細</a></td>                                                                                
+                                       <td><a th:href="@{/data/__${collection.getId()}__}">詳細</a></td>                                                                                
                                    </tr>                                      
                                </tbody>
                            </table> 
                            
                             <!-- ページネーション -->
+                            <div th:if="${collectionPage != null and collectionPage.getTotalPages() > 1}" class="d-flex justify-content-center">
                              <div  th:if="${collectionPage.getTotalPages() > 1}"class="d-flex justify-content-center">
                                  <nav aria-label="テーブル一覧ページ">
                                      <ul class="pagination">
                                          <li class="page-item">
                                              <span  th:if="${collectionPage.isFirst()}" class="page-link disabled">前</span>
-                                             <a   th:unless="${collectionPage.isFirst()}"th:href="@{/table(page = ${collectionPage.getNumber() - 1})}"  class="page-link samuraitravel-page-link">前</a>
+                                             <a   th:unless="${collectionPage.isFirst()}"th:href="@{/collections(page = ${collectionPage.getNumber() - 1})}"  class="page-link samuraitravel-page-link">前</a>
                                          </li>
                                          <li  th:each="i : ${#numbers.sequence(0, collectionPage.getTotalPages() - 1)}" class="page-item">
                                              <span  th:if="${i == collectionPage.getNumber()}" class="page-link active samuraitravel-active" ></span>
@@ -81,11 +103,12 @@
                                          </li>
                                          <li class="page-item">                        
                                              <span  th:if="${collectionPage.isLast()}" class="page-link disabled">次</span>
-                                              <a    th:unless="${collectionPage.isLast()}" th:href="@{/table(page = ${collectionPage.getNumber() + 1})}" class="page-link samuraitravel-page-link">次</a>
+                                              <a    th:unless="${collectionPage.isLast()}" th:href="@{/collections(page = ${collectionPage.getNumber() + 1})}" class="page-link samuraitravel-page-link">次</a>
                                          </li>
                                      </ul>
                                  </nav> 
-                             </div>                      
+                             </div>    
+                            </div>                  
 					 </div>       
 				</div>
 			</main>
