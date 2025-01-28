@@ -6,11 +6,8 @@
     <fullyQualifiedTypeName name="org.springframework.transaction.annotation.Transactional"/>
     <fullyQualifiedTypeName name="java.util.UUID"/>
     <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.JpaRepository"/>
-    <fullyQualifiedTypeName name="jakarta.validation.constraints.NotBlank"/>
     <fullyQualifiedTypeName name="org.springframework.stereotype.Service"/>
-    <fullyQualifiedTypeName name="com.example.origin.repository.CollectionRepository"/>
     <fullyQualifiedTypeName name="jakarta.transaction.Transactional"/>
-    <fullyQualifiedTypeName name="jakarta.validation.constraints.NotNull"/>
     <fullyQualifiedTypeName name="com.example.origin.repository.UserRepository"/>
     <fullyQualifiedTypeName name="org.springframework.security.core.annotation.AuthenticationPrincipal"/>
     <fullyQualifiedTypeName name="com.example.origin.security.UserDetailsImpl"/>
@@ -39,6 +36,15 @@
     <fullyQualifiedTypeName name="com.example.origin.service.DatasService"/>
     <fullyQualifiedTypeName name="com.example.origin.entity.Book"/>
     <fullyQualifiedTypeName name="com.example.origin.entity.Movie"/>
+    <fullyQualifiedTypeName name="com.example.origin.entity.Datas"/>
+    <fullyQualifiedTypeName name="com.example.origin.repository.CollectionRepository"/>
     <fullyQualifiedTypeName name="com.example.origin.entity.Collection"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PostMapping"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
+    <fullyQualifiedTypeName name="com.example.origin.repository.CategoryRepository"/>
+    <fullyQualifiedTypeName name="com.example.origin.entity.Category"/>
     <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.example.origin.form.DatasForm"/>
+    <fullyQualifiedTypeName name="jakarta.validation.constraints.NotBlank"/>
+    <fullyQualifiedTypeName name="jakarta.validation.constraints.NotNull"/>
 </qualifiedTypeNameHistroy>

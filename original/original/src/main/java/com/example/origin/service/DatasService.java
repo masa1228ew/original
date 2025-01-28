@@ -1,35 +1,52 @@
 package com.example.origin.service;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
 
+import com.example.origin.entity.Category;
 import com.example.origin.entity.Collection;
 import com.example.origin.entity.Datas;
+import com.example.origin.form.DatasForm;
+import com.example.origin.repository.CategoryRepository;
+import com.example.origin.repository.CollectionRepository;
 import com.example.origin.repository.DatasRepository;
 
-
+@Service
 public class DatasService {
 
 	private final DatasRepository datasRepository;
 	private final GenreService genreService;
+	private final CollectionRepository collectionRepository;
+	private final CategoryRepository categoryRepository;
 	
 	public DatasService(DatasRepository datasRepository
-						,GenreService genreService) {
+						,GenreService genreService
+						,CollectionRepository collectionRepository
+						,CategoryRepository categoryRepository) {
 		this.datasRepository = datasRepository;
 		this.genreService = genreService;
+		this.collectionRepository = collectionRepository;
+		this.categoryRepository = categoryRepository;
 	}
 	
-	public List<Datas> getAllData() {
-        return datasRepository.findAll();
-    }
-	
-	public List<?> getGenresForData(Datas datas) {
-        Collection collection = datas.getCollection();
-        if (collection == null) {
-            throw new IllegalArgumentException("Data does not have a valid collection.");
-        }
-        return genreService.getGenresByCollection(collection);
-    }
-	 public void saveData(Datas datas) {
-	        datasRepository.save(datas);
+	 public Datas createData(DatasForm datasForm) {
+	        // Collectionを取得
+	        Collection collection = collectionRepository.findById(datasForm.getCollectionId())
+	                .orElseThrow(() -> new IllegalArgumentException("Collection not found with ID: " ));
+	        
+	        // Categoryを取得
+	        Category category = categoryRepository.findById(datasForm.getCategoryId())
+	                .orElseThrow(() -> new IllegalArgumentException("Category not found with ID: "));
+
+	        // Datasオブジェクトを作成して設定
+	        Datas data = new Datas();
+	        data.setName(datasForm.getName());
+	        data.setCollection(collection);
+	        data.setCategory(category);
+	        data.setPrice(datasForm.getPrice());
+
+	        // 保存
+	        return datasRepository.save(data);
 	    }
+	
+	
 }

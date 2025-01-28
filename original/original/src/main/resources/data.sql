@@ -5,10 +5,6 @@ INSERT IGNORE INTO genre (id, name) VALUES (1, 'game');
 
 INSERT IGNORE INTO  collection(id, name,genre_id,user_id,created_at,updated_at) VALUES (1, '積みゲー',1,1,'2023-04-01','2023-04-20');
 
-INSERT IGNORE INTO game (id, genre_name) VALUES (1, 'アクション');
+INSERT IGNORE INTO category(id,category,genre_id)  VALUES (1,'アクション',1);
 
-INSERT IGNORE INTO book (id, genre_name) VALUES (1, '少年漫画');
-
-INSERT IGNORE INTO movie (id, genre_name) VALUES (1, 'アクション');
-
-INSERT IGNORE INTO datas (id,name,collection_id,genre_id,price,created_at,updated_at) VALUES (1,'龍が如く',1,1,290,'2023-04-01','2023-04-20');
+INSERT IGNORE INTO datas (id,name,collection_id,category_id,price,created_at,updated_at) VALUES (1,'龍が如く',1,1,290,'2023-04-01','2023-04-20');

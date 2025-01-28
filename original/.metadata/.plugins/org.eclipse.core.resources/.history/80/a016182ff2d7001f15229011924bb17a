@@ -1,9 +1,0 @@
-package com.example.origin.entity;
-
-public class VerificationToken {
-
-	public VerificationToken() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
-
-}

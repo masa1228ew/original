@@ -1,0 +1,20 @@
+package com.example.origin.service;
+
+import com.example.origin.repository.DatasRepository;
+
+@Service
+public class DatasService {
+
+	private final DatasRepository datasRepository;
+	private final GenreService genreService;
+	
+	public DatasService(DatasRepository datasRepository
+						,GenreService genreService) {
+		this.datasRepository = datasRepository;
+		this.genreService = genreService;
+	}
+	
+	
+	
+	
+}

@@ -1,9 +1,0 @@
-package com.example.origin.entity;
-
-public class PasswordResetToken {
-
-	public PasswordResetToken() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
-
-}

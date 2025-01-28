@@ -11,6 +11,6 @@ public interface CollectionRepository extends JpaRepository<Collection, Integer>
 	 public Page<Collection> findAll(Pageable pageable);
 public Page<Collection> findAllByOrderByCreatedAtDesc(Pageable pageable);
 public Page<Collection> findAllByOrderByNameAsc(Pageable pageable);
-
+Collection findByName(String name);
 
 }

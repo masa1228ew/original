@@ -29,7 +29,7 @@
 					<p>編集</p>
 				</div>
 					<div>
-						<p>追加</p>
+						<a th:href="@{/data/register(collectionId=${collection.id})}">追加</a>
 					</div>
 					<div>
 						<form method="get" class="mb-3 samuraitravel-sort-box"> 
@@ -69,11 +69,11 @@
                                    </tr>
                                </thead>   
                                <tbody>                                                     
-                                   <tr th:each="data:${datasPage.content}">
-                                       <td th:text="${data.name}"></td>
-                                        <td th:each="genre : ${data.genres}" th:text="${genre.name}"></td>
-                                         <td th:text="${data.price}"></td>
-                                          <td th:text="${#dates.format(data.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                   <tr th:each="data:${datasPage}">
+                                       <td th:text="${data.getName()}"></td>
+                                        <td th:text="${data.getCategory.getCategory()}"></td>
+                                         <td th:text="${data.getPrice()}"></td>
+                                          <td th:text="${data.getUpdatedAt()}"></td>
                                        <td><a href="#">詳細</a></td>                                                                                
                                    </tr>                                      
                                </tbody>

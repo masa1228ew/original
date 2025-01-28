@@ -1,9 +1,0 @@
-package com.example.origin.event;
-
-public class SignupEventPublisher {
-
-	public SignupEventPublisher() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
-
-}

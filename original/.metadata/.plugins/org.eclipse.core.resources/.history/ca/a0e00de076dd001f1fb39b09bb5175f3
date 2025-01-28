@@ -1,0 +1,8 @@
+package com.example.origin.form;
+
+public class DatasForm {
+
+	 private Integer collection; // コレクションID
+	    private Integer category;   // 選択したカテゴリID
+
+}
