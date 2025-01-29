@@ -26,8 +26,9 @@
 					</div>
 					 <form th:action="@{/data/register}" th:object="${datasForm}" method="post">
         <!-- コレクションID（非表示） -->
-        <input type="hidden" th:field="*{collectionId}" th:value="${collectionId}"/>
-        
+<!--        <input type="hidden" name="collection" th:field="*{collectionId}" />-->
+<p>Collection ID: <span th:text="${collectionId}"></span></p>
+         <input type="hidden" name="collectionId" th:value="${collectionId}" />
         <div class="form-group row mb-3">
 									<div class="col-md-4">
 										<label for="name" class="col-form-label text-md-left fw-bold">アイテム名</label>

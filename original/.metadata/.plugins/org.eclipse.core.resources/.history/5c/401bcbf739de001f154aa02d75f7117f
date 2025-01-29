@@ -1,0 +1,134 @@
+package com.example.origin.controller;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.example.origin.entity.Category;
+import com.example.origin.entity.Collection;
+import com.example.origin.entity.Datas;
+import com.example.origin.form.DatasForm;
+import com.example.origin.repository.CategoryRepository;
+import com.example.origin.repository.CollectionRepository;
+import com.example.origin.repository.DatasRepository;
+import com.example.origin.repository.GenreRepository;
+import com.example.origin.service.DatasService;
+import com.example.origin.service.GenreService;
+
+import jakarta.validation.Valid;
+
+@Controller
+@RequestMapping("/data")
+public class DataController {
+	private final DatasRepository datasRepository;
+	private final CollectionRepository collectionRepository;
+	private final GenreRepository genreRepository;
+	private final CategoryRepository categoryRepository;
+	private final DatasService datasService;
+	private final GenreService genreService;
+	
+	public DataController(DatasRepository datasRepository
+						,CollectionRepository collectionRepository
+						,GenreRepository genreRepository
+						,DatasService datasService
+						,GenreService genreService
+						,CategoryRepository categoryRepository) {
+		this.datasRepository = datasRepository;
+		this.collectionRepository = collectionRepository;
+		this.genreRepository = genreRepository;
+		this.datasService = datasService;
+		this.genreService = genreService;
+		this.categoryRepository = categoryRepository;
+	}
+	  @GetMapping("/{id}")
+	    public String index(@PathVariable(name = "id") Integer id,Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable) {
+		  System.out.println("テスト");
+		  Collection collectionId = collectionRepository.getReferenceById(id);
+		  Page<Datas> datasPage = datasRepository.findAll(pageable);
+		 
+		  System.out.println("テスト2");
+		 
+		  model.addAttribute("datasPage", datasPage);
+		  model.addAttribute("collection", collectionId); 
+		  System.out.println("テスト3");
+//		  System.out.println(datasPage);
+	        return "data/show";
+	    }   
+	  
+//	  @PostMapping("/create")
+//	    public Datas createData(
+//	            @RequestParam String dataName,
+//	            @RequestParam Integer collectionId,
+//	            @RequestParam Integer categoryId,
+//	            @RequestParam Integer price
+//	    ) {
+//	        return datasService.createData(dataName, collectionId, categoryId, price);
+//	    }
+	  
+	  @GetMapping("/register")
+	    public String showForm(@RequestParam(name = "collectionId") Integer collectionId, Model model) {
+	        // コレクションIDでコレクションを取得
+	        Collection collection = collectionRepository.findById(collection)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid Collection ID"));
+
+	        // ジャンルIDを取得
+	        Integer genreId = collection.getGenre().getId();
+
+	        // ジャンルIDに基づくカテゴリを取得
+	        List<Category> categories = categoryRepository.findByGenreId(genreId);
+	        DatasForm datasForm = new DatasForm();
+	        datasForm.setCollection(collection);
+	        // モデルにデータを渡す
+	        model.addAttribute("categories", categories);
+	        model.addAttribute("collectionId", collectionId);
+	        model.addAttribute("datasForm", datasForm);
+	        return "data/register";
+	    }
+
+	    @PostMapping("/register")
+	    public String submitForm(@ModelAttribute @Valid DatasForm datasForm, BindingResult result, Model model) {
+	        // フォームデータを取得して処理
+//	        Integer collection = datasForm.getCollection();
+//	        Integer category = datasForm.getCategory();
+
+	        // 必要な処理を実行（例：データベースへの保存）
+	        // datasService.saveData(collectionId, categoryId, ...);
+
+	    	
+	        datasService.createData(datasForm);
+	        Integer collectionId = datasForm.getCollection();
+	        
+	        return "redirect:/data/" + collectionId;
+	    }
+//	  @GetMapping("/register")
+//	    public String register() {
+//	        return "data/register";
+//	    }  
+	  
+	  @GetMapping("/high")
+	    public String high() {
+	        return "data/high";
+	    }  
+	  
+	  @GetMapping("/amount")
+	    public String amount() {
+	        return "data/amount";
+	    }  
+	  
+	  @GetMapping("/edit")
+	    public String edit() {
+	        return "data/edit";
+	    }  
+}

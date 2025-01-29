@@ -74,7 +74,7 @@
                                         <td th:text="${data.getCategory.getCategory()}"></td>
                                          <td th:text="${data.getPrice()}"></td>
                                           <td th:text="${data.getUpdatedAt()}"></td>
-                                       <td><a href="#">詳細</a></td>                                                                                
+                                       <td><a th:href="@{/data/__${data.getId()}__/edit}">編集</a></td>                                                                                
                                    </tr>                                      
                                </tbody>
                            </table> 

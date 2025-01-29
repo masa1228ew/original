@@ -26,11 +26,11 @@ public class Datas {
 	    private String name;
 	  
 	  @ManyToOne
-	  @JoinColumn(name="collection_id")
+	  @JoinColumn(name="collection_id", nullable = false)
 	  private Collection collection;
 	  
 	  @ManyToOne
-	  @JoinColumn(name="category_id")
+	  @JoinColumn(name="category_id", nullable = false)
 	  private Category category;
 	  
 	  @Column(name="price")
