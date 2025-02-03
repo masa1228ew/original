@@ -1,5 +1,7 @@
 package com.example.origin.form;
 
+import com.example.origin.entity.Collection;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,5 +21,5 @@ public class DatasEditForm {
 	    private Integer price; 
 	   
 	   @NotNull
-	    private Integer collectionId;
+	    private Collection collectionId;
 }

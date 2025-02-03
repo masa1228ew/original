@@ -1,9 +1,0 @@
-package com.example.origin.form;
-
-@Data
-public class CollectionRegisterForm {
-	@NotBlank(message = "コレクション名を入力してください。")
-    private String name;
-	
-
-}

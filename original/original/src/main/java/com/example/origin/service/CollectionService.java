@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.origin.entity.Collection;
 import com.example.origin.entity.Genre;
 import com.example.origin.entity.User;
+import com.example.origin.form.CollectionEditForm;
 import com.example.origin.form.CollectionRegisterForm;
 import com.example.origin.repository.CollectionRepository;
 import com.example.origin.repository.CustomCollectionRepository;
@@ -39,6 +40,17 @@ public class CollectionService {
 	collectionRepository.save(collection);
 }
 	
+	 @Transactional
+	    public void update(CollectionEditForm collectionEditForm) {
+		 Collection collection = collectionRepository.getReferenceById(collectionEditForm.getId());
+//		 Genre genre = genreRepository.getReferenceById(collectionEditForm.getGenreId().getId());
+	        
+		 collection.setName(collectionEditForm.getName());                
+//		 collection.setGenre(genre);
+			
+	                    
+			collectionRepository.save(collection);
+	    }    
 	
 	
 	public List<Collection>findAll(String sort_fg){

@@ -1,5 +1,0 @@
-package com.example.origin.repository;
-
-public interface GenreRepository extends JpaRepository<Genre, Integer>{
-	public Category  getReferenceById(Integer id);
-}

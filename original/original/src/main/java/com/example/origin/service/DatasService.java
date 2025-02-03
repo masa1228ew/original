@@ -55,7 +55,7 @@ public class DatasService {
 	  @Transactional
 	    public void update(DatasEditForm datasEditForm) {
 	        Datas datas = datasRepository.getReferenceById(datasEditForm.getId());
-	        Collection collection = collectionRepository.findById(datasEditForm.getCollectionId())
+	        Collection collection = collectionRepository.findById(datasEditForm.getCollectionId().getId())
 	                .orElseThrow(() -> new IllegalArgumentException("Collection not found with ID: " ));
 	        datas.setName(datasEditForm.getName());                
 	        

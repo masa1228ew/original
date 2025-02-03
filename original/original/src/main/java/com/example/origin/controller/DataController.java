@@ -1,11 +1,16 @@
 package com.example.origin.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -56,16 +61,46 @@ public class DataController {
 		this.categoryRepository = categoryRepository;
 	}
 	  @GetMapping("/{id}")
-	    public String index(@PathVariable(name = "id") Integer id,Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable) {
+	    public String index(@PathVariable(name = "id") Integer id,Model model
+	    					, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable
+	    					,@RequestParam(name = "keyword", required = false) String keyword
+	    					,@RequestParam(name = "order", required = false, defaultValue = "createdAtDesc") String order
+	    			        ) {
 		  System.out.println("テスト");
 		  Collection collectionId = collectionRepository.getReferenceById(id);
-		  Page<Datas> datasPage = datasRepository.findAll(pageable);
-		 
+		  Sort sort;
+	        switch (order) {
+	            case "wordAsc":
+	                sort = Sort.by(Sort.Order.asc("name"));  // 五十音順（名前順）
+	                break;
+	            case "updatedAtAsc":
+	                sort = Sort.by(Sort.Order.desc("updatedAt"));  // 更新順
+	                break;
+	            default:
+	                sort = Sort.by(Sort.Order.desc("createdAt"));  // 新着順（デフォルト）
+	                break;
+	        }
+
+	        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+	        
+//		  Page<Datas> datasPage = datasRepository.findAll(pageable);
+		  Page<Datas> datasPage;
+		  
 		  System.out.println("テスト2");
 		 
-		  model.addAttribute("datasPage", datasPage);
+//		  model.addAttribute("datasPage", datasPage);
 		  model.addAttribute("collection", collectionId); 
 		  System.out.println("テスト3");
+		  if (keyword != null && !keyword.isEmpty()) {
+//	            datasPage = datasRepository.findByNameLike("%" + keyword + "%", pageable);
+			  datasPage = datasRepository.findByCollectionIdAndNameContaining(id, keyword, pageable);
+	        } else {
+//	            datasPage = datasRepository.findAll(pageable);
+	        	datasPage = datasRepository.findByCollectionId(id, pageable);
+	        }  
+		  model.addAttribute("datasPage", datasPage);
+		  model.addAttribute("keyword", keyword);
+		  model.addAttribute("order", order);
 //		  System.out.println(datasPage);
 	        return "data/show";
 	    }   
@@ -128,8 +163,10 @@ public class DataController {
 	    public String edit(@PathVariable(name = "id") int id, Model model) {
 	    	Datas datas = datasRepository.getReferenceById(id);
 	    	DatasEditForm datasEditForm = new DatasEditForm(datas.getId(),datas.getName(),datas.getPrice(),datas.getCollection());
-	    	
+	    	DatasForm datasForm = new DatasForm();
+	    	datasForm.setCollectionId(datas.getCollection().getId());
 	    	model.addAttribute("datasEditForm", datasEditForm);
+	    	model.addAttribute("collectionId", datas.getCollection().getId());
 	    	
 	    	return "data/edit";
 	    }
@@ -143,9 +180,43 @@ public class DataController {
 	        datasService.update(datasEditForm);
 	        redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
 	        
-	        Integer collectionId = datasEditForm.getCollectionId();
-	        return "redirect:/data/"+ collectionId;
+	        redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
+	        return "redirect:/data/"+ datasEditForm.getCollectionId().getId();
 	    }    
+	    
+	    @GetMapping("/random")
+	    public ResponseEntity<?> getRandomData(@RequestParam("collectionId") Integer collectionId) {
+	        Optional<Datas> randomData = datasRepository.findRandomDataByCollectionId(collectionId);
+
+	        if (randomData.isPresent()) {
+	            return ResponseEntity.ok(randomData.get());
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("データが見つかりませんでした。");
+	        }
+	    }
+	    
+	    
+	    @GetMapping("/total-price")
+	    public ResponseEntity<?> getTotalPrice(@RequestParam("collectionId") Integer collectionId) {
+	        Integer totalPrice = datasRepository.getTotalPriceByCollectionId(collectionId);
+	        if (totalPrice != null) {
+	            return ResponseEntity.ok(totalPrice);
+	        } else {
+	            return ResponseEntity.ok(0); // データがない場合は 0 を返す
+	        }
+	    }
+	    
+	    @GetMapping("/total-height")
+	    public ResponseEntity<?> getTotalHeight(@RequestParam("collectionId") Integer collectionId) {
+	        Integer count = datasRepository.countByCollectionId(collectionId);
+	        if (count != null && count > 0) {
+	            double totalHeight = (count * 15) / 10.0; // 15mm * 個数 → cm に変換
+	            return ResponseEntity.ok(totalHeight);
+	        } else {
+	            return ResponseEntity.ok(0.0); // データがない場合は 0.0cm を返す
+	        }
+	    }
+	    
 	    
 	  @GetMapping("/high")
 	    public String high() {

@@ -1,0 +1,13 @@
+package com.example.origin.form;
+
+public class CollectionEditForm {
+
+	 @NotNull
+	    private Integer id;    
+	    
+	    @NotBlank(message = "名前を入力してください。")
+	    private String name;
+
+	    @NotNull
+	    private Genre genreId;
+}
