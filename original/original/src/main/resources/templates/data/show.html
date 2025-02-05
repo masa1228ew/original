@@ -21,7 +21,7 @@
 			<main>
 				<div class="container pt-4 pb-5">
 					<div class="d-flex justify-content-center">
-					<h1>データベース名</h1>
+					<h1 th:text="${collection.getName()}">データベース名</h1>
 					
 					</div>
 					<div class=right>
@@ -43,9 +43,7 @@
                                      </select>   
                                  </form>   
 					</div>
-					<div>
-	                                  <a>絞り込み</a>
-					</div>
+					
 					<div>
                                 <button id="randomButton" class="btn btn-primary" th:data-collection-id="${collection.id}">ランダム</button>
 					</div>
@@ -69,6 +67,22 @@
                                    <div class="input-group">
 									   <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
 										   <div>
+											   <div>
+	                                 <!-- カテゴリー選択 -->
+            <select name="categoryId" class="form-select">
+            <option value="">すべてのカテゴリ</option>
+            <option th:each="category : ${categories}" 
+                    th:value="${category.id}" 
+                    th:text="${category.category}" 
+                    th:selected="${category.id == selectedCategory}">
+            </option>
+        </select>
+
+            <!-- 検索ボタン -->
+            <button type="submit" class="btn btn-primary">検索</button>
+					</div>
+					</form>
+					 <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
                                      <input type="text" class="form-control" name="keyword"  th:value="${keyword}" placeholder="名前">
                                      <button type="submit" class="btn  shadow-sm">検索</button>
 										   </div>
@@ -104,17 +118,17 @@
                                         <li class="page-item">
                                             <span th:if="${datasPage.isFirst()}" class="page-link disabled">前</span>
                                            
-                                            <a th:unless="${datasPage.isFirst()}" th:href="@{/data/__${collection.getId()}__(page = ${datasPage.getNumber() - 1}, keyword = ${keyword})}" class="page-link samuraitravel-page-link">前</a>
+                                            <a th:unless="${datasPage.isFirst()}" th:href="@{/data/__${collection.getId()}__(page = ${datasPage.getNumber() - 1}, keyword = ${keyword}, categoryId=${selectedCategory})}" class="page-link samuraitravel-page-link">前</a>
                                         </li>
                                         <li th:each="i : ${#numbers.sequence(0, datasPage.getTotalPages() - 1)}" class="page-item">
                                             <span th:if="${i == datasPage.getNumber()}" class="page-link active samuraitravel-active" th:text="${i + 1}"></span>
                                             
-                                            <a th:unless="${i == datasPage.getNumber()}" th:href="@{/data/__${collection.getId()}__(page = ${i}, keyword = ${keyword})}" class="page-link samuraitravel-page-link" th:text="${i + 1}"></a>
+                                            <a th:unless="${i == datasPage.getNumber()}" th:href="@{/data/__${collection.getId()}__(page = ${i}, keyword = ${keyword}, categoryId=${selectedCategory})}" class="page-link samuraitravel-page-link" th:text="${i + 1}"></a>
                                         </li>
                                         <li class="page-item">                        
                                             <span th:if="${datasPage.isLast()}" class="page-link disabled">次</span>
                                             
-                                            <a th:unless="${datasPage.isLast()}" th:href="@{/data/__${collection.getId()}__(page = ${datasPage.getNumber() + 1}, keyword = ${keyword})}" class="page-link samuraitravel-page-link">次</a>
+                                            <a th:unless="${datasPage.isLast()}" th:href="@{/data/__${collection.getId()}__(page = ${datasPage.getNumber() + 1}, keyword = ${keyword}, categoryId=${selectedCategory})}" class="page-link samuraitravel-page-link">次</a>
                                         </li>
                                     </ul>
                                 </nav> 

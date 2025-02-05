@@ -41,7 +41,9 @@
 									<a href="#" class="samuraitravel-link-danger" data-bs-toggle="modal"
    th:attr="data-bs-target='#deleteCollectionModal' + ${collection.getId()}">削除</a>
 								 </div>  
-								  <!-- 削除用モーダル -->
+								 
+							</form>
+							 <!-- 削除用モーダル -->
                                        <div class="modal fade" th:attr="id='deleteCollectionModal' + ${collection.getId()}" tabindex="-1"
      th:attrappend="aria-labelledby='deleteCollectionModalLabel' + ${collection.getId()}">
     <div class="modal-dialog">
@@ -60,8 +62,7 @@
             </div>
         </div>
     </div>
-</div>     
-							</form>
+</div>
 				</div>
 			</main>
 		</div>

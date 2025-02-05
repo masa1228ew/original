@@ -95,7 +95,8 @@ public class TableController {
 //	        Collection collection = collectionRepository.getReferenceById(id);
 	        redirectAttributes.addFlashAttribute("successMessage", "データベースをを削除しました。");
 	        
-	        return "redirect:/index";
+	        return "redirect:/";
+//	        return "index";
 	    }    
 	  
 }

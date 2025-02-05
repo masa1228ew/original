@@ -21,4 +21,7 @@ public interface DatasRepository extends JpaRepository<Datas, Integer>{
 	    Integer getTotalPriceByCollectionId(@Param("collectionId") Integer collectionId);
 	 @Query("SELECT COUNT(d) FROM Datas d WHERE d.collection.id = :collectionId")
 	    Integer countByCollectionId(@Param("collectionId") Integer collectionId);
+	public Page<Datas> findByCollectionIdAndCategoryIdAndNameContaining(Integer integer, Integer categoryId,
+			Object object, Pageable pageable);
+	
 }

@@ -6,10 +6,6 @@
     <fullyQualifiedTypeName name="java.util.UUID"/>
     <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.JpaRepository"/>
     <fullyQualifiedTypeName name="org.springframework.stereotype.Service"/>
-    <fullyQualifiedTypeName name="com.example.origin.repository.UserRepository"/>
-    <fullyQualifiedTypeName name="org.springframework.security.core.annotation.AuthenticationPrincipal"/>
-    <fullyQualifiedTypeName name="com.example.origin.security.UserDetailsImpl"/>
-    <fullyQualifiedTypeName name="com.example.origin.entity.User"/>
     <fullyQualifiedTypeName name="java.util.Map"/>
     <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
     <fullyQualifiedTypeName name="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"/>
@@ -39,7 +35,6 @@
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
     <fullyQualifiedTypeName name="com.example.origin.repository.CategoryRepository"/>
     <fullyQualifiedTypeName name="com.example.origin.entity.Category"/>
-    <fullyQualifiedTypeName name="java.util.List"/>
     <fullyQualifiedTypeName name="com.example.origin.form.DatasForm"/>
     <fullyQualifiedTypeName name="com.example.origin.form.DatasEditForm"/>
     <fullyQualifiedTypeName name="jakarta.transaction.Transactional"/>
@@ -53,4 +48,11 @@
     <fullyQualifiedTypeName name="org.springframework.data.jpa.repository.Query"/>
     <fullyQualifiedTypeName name="java.util.Optional"/>
     <fullyQualifiedTypeName name="org.springframework.data.repository.query.Param"/>
+    <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.DeleteMapping"/>
+    <fullyQualifiedTypeName name="org.springframework.security.core.userdetails.UserDetails"/>
+    <fullyQualifiedTypeName name="org.springframework.security.core.annotation.AuthenticationPrincipal"/>
+    <fullyQualifiedTypeName name="com.example.origin.repository.UserRepository"/>
+    <fullyQualifiedTypeName name="com.example.origin.entity.User"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.example.origin.security.UserDetailsImpl"/>
 </qualifiedTypeNameHistroy>

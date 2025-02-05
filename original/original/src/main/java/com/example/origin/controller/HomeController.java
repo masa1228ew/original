@@ -1,11 +1,14 @@
 package com.example.origin.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,23 +16,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.origin.entity.Collection;
+import com.example.origin.entity.User;
 import com.example.origin.repository.CollectionRepository;
-import com.example.origin.repository.CustomCollectionRepository;
+import com.example.origin.repository.UserRepository;
+import com.example.origin.security.UserDetailsImpl;
 import com.example.origin.service.CollectionService;
 
 @Controller
 public class HomeController {
 private final CollectionRepository collectionRepository;
-private final CustomCollectionRepository customCollectionRepository;
+private final UserRepository userRepository;
 
 private final CollectionService collectionService;
 	
 	public HomeController(CollectionRepository collectionRepository
 						  ,CollectionService collectionService
-						  , CustomCollectionRepository customCollectionRepository) {
+						  , UserRepository userRepository) {
 		this.collectionRepository = collectionRepository;
 		this.collectionService = collectionService;
-		 this.customCollectionRepository = customCollectionRepository;
+		 this.userRepository = userRepository;
 	}
 	
 	
@@ -37,13 +42,23 @@ private final CollectionService collectionService;
 	 public String index(Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable
 			 			 , @RequestParam(defaultValue = "name") String sortBy,
 			 		     @RequestParam(defaultValue = "asc") String direction
-			 		    
+			 		    ,@AuthenticationPrincipal UserDetailsImpl  userDetailsImpl 
 			 			) {
 		 System.out.println("テスト");
+//		 String email = userDetails.getUsername();
+//		 User user = userRepository.findByEmail(email);
+		 User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());  
+		 if (user == null) {
+	            System.out.println("ユーザーが見つかりません");
+	            return "redirect:/login"; // ログインページへリダイレクト
+	        }
+		 List<Collection> collections = collectionRepository.findByUser(user);
+		
 	     Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
 	     Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	     System.out.println("テスト２");
-	     Page<Collection> collectionPage = collectionRepository.findAll(sortedPageable);
+//	     Page<Collection> collectionPage = collectionRepository.findAll(sortedPageable);
+	     Page<Collection> collectionPage = collectionRepository.findByUser(user, sortedPageable);
 	     model.addAttribute("collectionPage", collectionPage);
 	     System.out.println("テスト3");
 	     System.out.println("データベースにあるコレクション数: " + collectionRepository.count());
@@ -52,6 +67,7 @@ private final CollectionService collectionService;
 	     model.addAttribute("sortBy", sortBy);  // 選択された sortBy の値
 	     model.addAttribute("direction", direction);  // 選択された direction の値
 	     System.out.println("テスト4");
+	     model.addAttribute("user", user);
 	     return "index";             
 	        
 	      

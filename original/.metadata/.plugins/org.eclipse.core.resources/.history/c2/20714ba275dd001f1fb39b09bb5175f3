@@ -1,9 +1,0 @@
-package com.example.origin.form;
-
-public class DatasForm {
-
-	public DatasForm() {
-		// TODO 自動生成されたコンストラクター・スタブ
-	}
-
-}

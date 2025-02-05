@@ -62,12 +62,13 @@ public class DataController {
 	}
 	  @GetMapping("/{id}")
 	    public String index(@PathVariable(name = "id") Integer id,Model model
+	    					, @RequestParam(required = false) Integer categoryId
 	    					, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable
 	    					,@RequestParam(name = "keyword", required = false) String keyword
 	    					,@RequestParam(name = "order", required = false, defaultValue = "createdAtDesc") String order
 	    			        ) {
 		  System.out.println("テスト");
-		  Collection collectionId = collectionRepository.getReferenceById(id);
+		
 		  Sort sort;
 	        switch (order) {
 	            case "wordAsc":
@@ -89,7 +90,7 @@ public class DataController {
 		  System.out.println("テスト2");
 		 
 //		  model.addAttribute("datasPage", datasPage);
-		  model.addAttribute("collection", collectionId); 
+		  
 		  System.out.println("テスト3");
 		  if (keyword != null && !keyword.isEmpty()) {
 //	            datasPage = datasRepository.findByNameLike("%" + keyword + "%", pageable);
@@ -98,9 +99,23 @@ public class DataController {
 //	            datasPage = datasRepository.findAll(pageable);
 	        	datasPage = datasRepository.findByCollectionId(id, pageable);
 	        }  
+		  
+		  Collection collection = collectionRepository.getReferenceById(id);
+		  if (categoryId != null) {
+		        datasPage = datasRepository.findByCollectionIdAndCategoryIdAndNameContaining(collection.getId(), categoryId, keyword != null ? keyword : "", pageable);
+		    } else {
+		        datasPage = datasRepository.findByCollectionIdAndNameContaining(collection.getId(), keyword != null ? keyword : "", pageable);
+		    }
+
+		    List<Category> categories = categoryRepository.findAll();
+		  
+		    
 		  model.addAttribute("datasPage", datasPage);
 		  model.addAttribute("keyword", keyword);
+		  model.addAttribute("categories", categories);
 		  model.addAttribute("order", order);
+		  model.addAttribute("collection", collection); 
+		  model.addAttribute("selectedCategory", categoryId);
 //		  System.out.println(datasPage);
 	        return "data/show";
 	    }   
@@ -162,11 +177,13 @@ public class DataController {
 	    @GetMapping("/{id}/edit")
 	    public String edit(@PathVariable(name = "id") int id, Model model) {
 	    	Datas datas = datasRepository.getReferenceById(id);
+	    	
 	    	DatasEditForm datasEditForm = new DatasEditForm(datas.getId(),datas.getName(),datas.getPrice(),datas.getCollection());
 	    	DatasForm datasForm = new DatasForm();
 	    	datasForm.setCollectionId(datas.getCollection().getId());
 	    	model.addAttribute("datasEditForm", datasEditForm);
 	    	model.addAttribute("collectionId", datas.getCollection().getId());
+	    	model.addAttribute("datas", datas);
 	    	
 	    	return "data/edit";
 	    }
@@ -217,6 +234,18 @@ public class DataController {
 	        }
 	    }
 	    
+	    @PostMapping("/{id}/delete")
+	    public String delete(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes) {
+		 System.out.println("テストデリート");
+		 Integer collectionId = datasRepository.getReferenceById(id).getCollection().getId();
+	        datasRepository.deleteById(id);
+	        System.out.println("テスト2");
+//	        Collection collection = collectionRepository.getReferenceById(id);
+	        redirectAttributes.addFlashAttribute("successMessage", "データベースをを削除しました。");
+	        
+	        return "redirect:/data/" + collectionId;
+//	        return "index";
+	    }    
 	    
 	  @GetMapping("/high")
 	    public String high() {
