@@ -8,7 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,18 +43,23 @@ private final CollectionService collectionService;
 	 public String index(Model model, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable
 			 			 , @RequestParam(defaultValue = "name") String sortBy,
 			 		     @RequestParam(defaultValue = "asc") String direction
-			 		    ,@AuthenticationPrincipal UserDetailsImpl  userDetailsImpl 
+			 		   
 			 			) {
 		 System.out.println("テスト");
-//		 String email = userDetails.getUsername();
-//		 User user = userRepository.findByEmail(email);
-		 User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());  
+//		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		 Object principal = authentication.getPrincipal();
+		 if (principal == null || !(principal instanceof UserDetailsImpl)) {
+		        System.out.println("ユーザー詳細情報が取得できません");
+		        return "redirect:/login";
+		    }
+		 UserDetailsImpl userDetailsImpl = (UserDetailsImpl) principal;
+		 User user = userRepository.findById(userDetailsImpl.getUser().getId()).orElse(null); 
 		 if (user == null) {
 	            System.out.println("ユーザーが見つかりません");
 	            return "redirect:/login"; // ログインページへリダイレクト
 	        }
 		 List<Collection> collections = collectionRepository.findByUser(user);
-		
 	     Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
 	     Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 	     System.out.println("テスト２");
