@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -187,4 +189,53 @@ public class AuthController {
 	        
 	        return "auth/verify";         
 	    }    
-}
+	  
+	  @GetMapping("/delete")
+	    public String showDeletePage(Model model) {
+	        return "auth/delete"; // auth/delete.html を表示
+	    }
+	  
+	  @PostMapping("/delete")
+	  public String deleteUser(@AuthenticationPrincipal UserDetails userDetails, RedirectAttributes redirectAttributes) {
+	      System.out.println("テスト: deleteUser メソッドが呼ばれました");
+
+	      // userDetails のデバッグ
+	      if (userDetails == null) {
+	          System.out.println("userDetails が null です");
+	          redirectAttributes.addFlashAttribute("error", "ログインしていません。");
+	          return "redirect:/login";
+	      }
+	      System.out.println("テスト2: userDetails が取得できました");
+	      System.out.println("userDetails のクラス: " + userDetails.getClass().getName());
+	      System.out.println("userDetails: " + userDetails);
+
+	      try {
+	          // `getUsername()` で取得できるか確認
+	          String email = userDetails.getUsername();
+	          System.out.println("取得したメールアドレス: " + email);
+
+	          User user = userService.findByEmail(email);
+	          if (user == null) {
+	              System.out.println("ユーザーが見つかりません");
+	              redirectAttributes.addFlashAttribute("error", "ユーザー情報が見つかりません。");
+	              return "redirect:/auth/delete";
+	          }
+
+	          System.out.println("テスト3: ユーザーが見つかりました");
+	          Integer userId = user.getId();
+	          System.out.println("削除対象のユーザーID: " + userId);
+
+	          // ユーザー削除処理
+	          userService.deleteUser(userId);
+	          System.out.println("テスト4: ユーザー削除完了");
+
+	          redirectAttributes.addFlashAttribute("message", "ユーザーが削除されました");
+	          return "redirect:/logout";
+	      } catch (Exception e) {
+	          e.printStackTrace();
+	          redirectAttributes.addFlashAttribute("error", "削除に失敗しました");
+	          return "redirect:/auth/delete";
+	      }
+	  }
+	    }
+

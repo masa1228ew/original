@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ユーザー削除</title>
+    <!-- BootstrapのCSSを読み込む -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <form action="/auth/delete" method="post">
+    <div class="mb-3">
+        <label for="userId" class="form-label">ユーザーID:</label>
+        <input type="text" class="form-control" id="userId" name="userId" required>
+    </div>
+
+    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+        ユーザーを削除
+    </button>
+
+    <!-- 削除確認モーダル -->
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">削除の確認</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+                </div>
+                <div class="modal-body">
+                    <p>本当に削除してもよろしいでしょうか？</p>
+                    <p>削除を実行するには「削除」と入力してください。</p>
+                    <input type="text" id="deleteConfirmInput" class="form-control" placeholder="削除">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteButton" disabled>削除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+    </div>
+
+    <!-- BootstrapのJS（モーダル動作のために必要） -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 削除ボタンを有効化するJavaScript -->
+    <script>
+        document.getElementById("deleteConfirmInput").addEventListener("input", function() {
+            let inputText = this.value;
+            let deleteButton = document.getElementById("confirmDeleteButton");
+
+            if (inputText === "削除") {
+                deleteButton.removeAttribute("disabled");
+            } else {
+                deleteButton.setAttribute("disabled", "true");
+            }
+        });
+
+        // 削除ボタンが押されたら削除リクエストを送る
+        document.getElementById("confirmDeleteButton").addEventListener("click", function() {
+            let userId = 1;  // 実際は動的に設定する
+            fetch(`/users/${userId}`, {
+                method: "DELETE"
+            }).then(response => {
+                if (response.ok) {
+                    alert("ユーザーが削除されました");
+                    window.location.href = "/users"; // ユーザー一覧ページへリダイレクト
+                } else {
+                    alert("削除に失敗しました");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

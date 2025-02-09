@@ -1,5 +1,6 @@
 package com.example.origin.service;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,5 +90,17 @@ public class UserService {
 		        userRepository.save(user);
 		        passwordResetTokenRepository.delete(resetToken);
 		        return true;
+		    }
+		 
+		 public User findByEmail(String email) {
+		        User user = userRepository.findByEmail(email);
+		        if (user == null) {
+		            throw new UsernameNotFoundException("ユーザーが見つかりません: " + email);
+		        }
+		        return user;
+		    }
+		 
+		 public void deleteUser(Integer userId) {
+		        userRepository.deleteById(userId);
 		    }
 }

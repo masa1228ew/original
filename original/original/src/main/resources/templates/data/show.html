@@ -11,13 +11,8 @@
 	
 	<body>
 		<div class="wrapper">
-			<nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm ">
-               <div class="container ">
-                   <a class="navbar-brand" th:href="@{/}">                        
-                       ロゴ                        
-                   </a>                                                                    
-               </div>
-           </nav>
+			 <div th:replace="~{fragment :: header}"></div>
+			
 			<main>
 				<div class="container pt-4 pb-5">
 					<div class="d-flex justify-content-center">
@@ -142,7 +137,8 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="totalHeightLabel">合計の高さ</h5>
+		 <h5 class="modal-title" id="totalHeightLabel">DVD一枚に換算すると</h5>
+<!--        <h5 class="modal-title" id="totalHeightLabel">合計の高さ</h5>-->
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
