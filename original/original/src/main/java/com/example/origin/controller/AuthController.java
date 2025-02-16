@@ -237,5 +237,16 @@ public class AuthController {
 	          return "redirect:/auth/delete";
 	      }
 	  }
+	  
+	  @GetMapping("/privacy")
+	    public String privacy() {
+	        return "auth/privacy";
+	    }   
+	  
+	  @GetMapping("/inquiry")
+	    public String inquiry() {
+	        return "auth/inquiry";
+	    } 
+	  
 	    }
 

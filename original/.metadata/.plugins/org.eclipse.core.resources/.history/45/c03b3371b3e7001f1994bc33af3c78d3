@@ -1,0 +1,27 @@
+package com.example.origin.form;
+
+import com.example.origin.entity.Collection;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class DatasEditForm {
+	 @NotNull
+	    private Integer id;   
+	 
+	 @Size(max = 255, message = "アイテム名は255文字以内で入力してください")
+	   @NotBlank
+	    private String name;
+	   
+	   
+	    
+	    private Integer price; 
+	   
+	   @NotNull
+	    private Collection collectionId;
+}

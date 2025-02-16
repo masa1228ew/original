@@ -63,15 +63,14 @@
 									   <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
 										   <div>
 											   <div>
-	                                 <!-- カテゴリー選択 -->
-            <select name="categoryId" class="form-select">
-            <option value="">すべてのカテゴリ</option>
-            <option th:each="category : ${categories}" 
-                    th:value="${category.id}" 
-                    th:text="${category.category}" 
-                    th:selected="${category.id == selectedCategory}">
-            </option>
-        </select>
+	           <select name="categoryId" class="form-select">
+    <option value="">すべてのカテゴリ</option>
+    <option th:each="category : ${categories}" 
+            th:value="${category.id}" 
+            th:text="${category.category}" 
+            th:selected="${category.id == selectedCategory}">
+    </option>
+</select>
 
             <!-- 検索ボタン -->
             <button type="submit" class="btn btn-primary">検索</button>
@@ -108,7 +107,7 @@
                                </tbody>
                            </table> 
                             <div th:if="${datasPage.getTotalPages() > 1}" class="d-flex justify-content-center">
-                                <nav aria-label="民宿一覧ページ">
+                                <nav aria-label="一覧ページ">
                                     <ul class="pagination">
                                         <li class="page-item">
                                             <span th:if="${datasPage.isFirst()}" class="page-link disabled">前</span>

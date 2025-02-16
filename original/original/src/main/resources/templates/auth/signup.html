@@ -1,92 +1,151 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org">
-	<head>
-		  <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-           <link th:href="@{/css/style.css}" rel="stylesheet" >	  
-		<title>会員登録</title>
-	</head>
-	<body>
-		<div  class="wrapper">
-				<!-- ヘッダー -->
-           <div th:replace="~{fragment :: header}"></div>
-			<main>
-				<div class="container">
-					<div class="row justify-content-center">
-						<div class="col-xl-5 col-lg-6 col-md-8">
-							  <h1 class="mb-4 text-center">会員登録</h1>
-							    <form method="post" th:action="@{/signup}"th:object="${signupForm}">
-     
-                                 
-                                 
-                                
-                                                                                                                         
-                                
-                                                                                                               
-                                                                                                               
-                                 
-                                 
-                                                                                                                         
-                                 <div class="form-group row mb-3">
-                                     <div class="col-md-5">
-                                         <label for="email" class="col-form-label text-md-left fw-bold">
-                                             <div class="d-flex align-items-center">
-                                                 <span class="me-1">メールアドレス</span>
-                                                 <span class="badge bg-danger">必須</span>
-                                             </div>
-                                         </label>
-                                     </div>
-                                     <div class="col-md-7">
-                                         <div  th:if="${#fields.hasErrors('email')}" class="text-danger small mb-2" th:errors="*{email}"></div>
-                                         <input type="text" class="form-control"  th:field="*{email}" autocomplete="email" >
-                                     </div>
-                                 </div>
-                                                                                                                         
-                                 <div class="form-group row mb-3">
-                                     <div class="col-md-5">
-                                         <label for="password" class="col-form-label text-md-left fw-bold">
-                                             <div class="d-flex align-items-center">
-                                                 <span class="me-1">パスワード</span>
-                                                 <span class="badge bg-danger">必須</span>
-                                             </div>
-                                         </label>
-                                     </div>
-                                     <div class="col-md-7">
-                                         <div  th:if="${#fields.hasErrors('password')}" class="text-danger small mb-2" th:errors="*{password}"></div>
-                                         <input type="password" class="form-control"   th:field="*{password}" autocomplete="new-password">
-                                     </div>
-                                 </div>
-                                                                                                                     
-                                 <div class="form-group row mb-3">
-                                     <div class="col-md-5">
-                                         <label for="passwordConfirmation" class="col-form-label text-md-left fw-bold">
-                                             <div class="d-flex align-items-center">
-                                                 <span class="me-1">パスワード（確認用）</span>
-                                                 <span class="badge bg-danger">必須</span>
-                                             </div>
-                                         </label>
-                                     </div>
-                                     <div class="col-md-7">
-                                         <div  th:if="${#fields.hasErrors('passwordConfirmation')}" class="text-danger small mb-2" th:errors="*{passwordConfirmation}"></div>
-                                         <input type="password" class="form-control"  th:field="*{passwordConfirmation}"  autocomplete="new-password">
-                                     </div>
-                                 </div>
-                                 
-                                 <div class="form-group d-flex justify-content-center my-4 ">
-                                     <button type="submit" class="btn shadow-sm w-50 btn-color">登録</button>
-                                 </div>
-                             </form> 
-                             
-                               <div class="text-center">
-                                 <a th:href="@{/login}">ログイン</a>
-                             </div>
-                             
-                              
-						</div>
-					</div>
-				</div>
-			</main>
-		</div>
-	</body>
-</html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <title>会員登録</title>
+</head>
+<body>
+<div class="wrapper">
+    <!-- ヘッダー -->
+    <div th:replace="~{fragment :: header}"></div>
+
+    <main>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-5 col-lg-6 col-md-8">
+                    <h1 class="mb-4 text-center">会員登録</h1>
+
+                    <form method="post" th:action="@{/signup}" th:object="${signupForm}" id="signupForm">
+                        <div class="form-group row mb-3">
+                            <div class="col-md-5">
+                                <label for="email" class="col-form-label text-md-left fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-1">メールアドレス</span>
+                                        <span class="badge bg-danger">必須</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-7">
+                                <div th:if="${#fields.hasErrors('email')}" class="text-danger small mb-2" th:errors="*{email}"></div>
+                                <input type="text" class="form-control" th:field="*{email}" autocomplete="email">
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <div class="col-md-5">
+                                <label for="password" class="col-form-label text-md-left fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-1">パスワード</span>
+                                        <span class="badge bg-danger">必須</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-7">
+                                <div th:if="${#fields.hasErrors('password')}" class="text-danger small mb-2" th:errors="*{password}"></div>
+                                <input type="password" class="form-control" th:field="*{password}" autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <div class="col-md-5">
+                                <label for="passwordConfirmation" class="col-form-label text-md-left fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-1">パスワード（確認用）</span>
+                                        <span class="badge bg-danger">必須</span>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-md-7">
+                                <div th:if="${#fields.hasErrors('passwordConfirmation')}" class="text-danger small mb-2" th:errors="*{passwordConfirmation}"></div>
+                                <input type="password" class="form-control" th:field="*{passwordConfirmation}" autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-center my-4">
+                            <button type="submit" class="btn shadow-sm w-50 btn-color">登録</button>
+                        </div>
+                    </form>
+
+                    <div class="text-center">
+                        <a th:href="@{/login}">ログイン</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- ✅ モーダルの追加 -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">登録完了</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
+            </div>
+            <div class="modal-body">
+                登録いただいたメールアドレスから認証を完了してください。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ✅ フォーム送信後にエラーがなければモーダルを表示する -->
+<script th:inline="javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("signupForm");
+    const passwordField = document.querySelector("[name='password']");
+    const passwordError = document.createElement("div"); // エラーメッセージ用
+    passwordError.classList.add("text-danger", "small", "mt-1");
+
+    passwordField.parentNode.appendChild(passwordError); // パスワード入力欄の下にエラーメッセージを追加
+
+    const successModal = new bootstrap.Modal(document.getElementById("successModal"));
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault(); // 通常のフォーム送信を防ぐ
+
+        // **🛠 クライアント側のパスワードバリデーション**
+        const password = passwordField.value.trim();
+        if (password.length < 8) {
+            passwordError.textContent = "パスワードは8文字以上入力してください。";
+            return; // 送信を中止
+        } else {
+            passwordError.textContent = ""; // エラーメッセージを消去
+        }
+
+        // 🔍 **最新のエラーメッセージを確認**
+        const errorMessages = document.querySelectorAll(".text-danger");
+        let hasError = false;
+
+        errorMessages.forEach(error => {
+            if (error.offsetParent !== null && error.textContent.trim() !== "") {
+                hasError = true;
+            }
+        });
+
+        if (hasError) {
+            console.log("エラーがあるため、モーダルを表示しません");
+            return;
+        }
+
+        // ✅ **エラーがない場合のみモーダルを表示**
+        successModal.show();
+
+        // ✅ **モーダル表示と同時にフォームを送信**
+        form.submit();
+    });
+});
+</script>
+
+</body>
+</html>

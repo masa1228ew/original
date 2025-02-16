@@ -19,24 +19,28 @@ public class WebSecurityConfig {
 	    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	        http
 	       
-	            .authorizeHttpRequests((requests) -> requests                
+	            .authorizeHttpRequests(auth -> auth                
 	            		.requestMatchers("/css/**", "/images/**", "/js/**", "/storage/**", "/", "/signup/**","/passedit/**", "/passreset/**","/reset-password/**").permitAll()  // すべてのユーザーにアクセスを許可するURL
 	            		   .requestMatchers("/table/**").permitAll()
 	            		   .requestMatchers(HttpMethod.DELETE, "/table/**").permitAll() 
+	            		   
+	            		   .requestMatchers("/delete").authenticated() // ユーザー削除は認証が必要
 	                .requestMatchers("/admin/**").hasRole("ADMIN")  // 管理者にのみアクセスを許可するURL
-	                .anyRequest().authenticated()                   // 上記以外のURLはログインが必要（会員または管理者のどちらでもOK）
+	                .anyRequest().authenticated()  // 上記以外のURLはログインが必要（会員または管理者のどちらでもOK）
+	                
 	            )
 	            .formLogin((form) -> form
 	                .loginPage("/login")              // ログインページのURL
 	                .loginProcessingUrl("/login")     // ログインフォームの送信先URL
-	                .defaultSuccessUrl("/?loggedIn")  // ログイン成功時のリダイレクト先URL
+	                .defaultSuccessUrl("/?loggedIn", true)  // ログイン成功時のリダイレクト先URL
 	                .failureUrl("/login?error")       // ログイン失敗時のリダイレクト先URL
 	                .permitAll()
 	            )
 	            .logout((logout) -> logout
 	                .logoutSuccessUrl("/?loggedOut")  // ログアウト時のリダイレクト先URL
 	                .permitAll()
-	            );            
+	            );    
+//	        .csrf(csrf -> csrf.disable()); // CSRFを無効化（削除リクエストがPOSTなので必要）
 	            
 	        return http.build();
 	    }

@@ -27,7 +27,7 @@
                     </div>      
                           
                       <div class="d-flex justify-content-center">                                            
-                        <h1>あなたのデータベース</h1>
+                        <h1>あなたのコレクション</h1>
                                         
                      </div> 
                      <div class="right">
@@ -74,7 +74,7 @@
                                   <table class="table">
                                <thead>
                                    <tr>
-                                       <th scope="col">データベース名</th>
+                                       <th scope="col">コレクション名</th>
                                        
                                        <th scope="col"></th>                                        
                                    </tr>
@@ -99,8 +99,8 @@
                                              <a   th:unless="${collectionPage.isFirst()}"th:href="@{/collections(page = ${collectionPage.getNumber() - 1})}"  class="page-link samuraitravel-page-link">前</a>
                                          </li>
                                          <li  th:each="i : ${#numbers.sequence(0, collectionPage.getTotalPages() - 1)}" class="page-item">
-                                             <span  th:if="${i == collectionPage.getNumber()}" class="page-link active samuraitravel-active" ></span>
-                                             <a   th:unless="${i == collectionPage.getNumber()}" class="page-link samuraitravel-page-link"></a>
+                                             <span  th:if="${i == collectionPage.getNumber()}" class="page-link active samuraitravel-active" th:text="${i + 1}"></span>
+                                             <a   th:unless="${i == collectionPage.getNumber()}" th:href="@{/collections(page = ${i})}" class="page-link samuraitravel-page-link" th:text="${i + 1}"></a>
                                          </li>
                                          <li class="page-item">                        
                                              <span  th:if="${collectionPage.isLast()}" class="page-link disabled">次</span>

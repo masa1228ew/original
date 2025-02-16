@@ -52,10 +52,12 @@ public class TableController {
             return "table/register";
         }
         
+      
+        
         collectionService.create(collectionRegisterForm,user);
         redirectAttributes.addFlashAttribute("successMessage", "コレクションを登録しました。");    
         
-        return "redirect:/collections";
+        return "redirect:/";
     }    
 	
 	@GetMapping("/{id}/edit")

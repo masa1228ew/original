@@ -107,8 +107,12 @@ public class DataController {
 		        datasPage = datasRepository.findByCollectionIdAndNameContaining(collection.getId(), keyword != null ? keyword : "", pageable);
 		    }
 
-		    List<Category> categories = categoryRepository.findAll();
-		  
+//		    List<Category> categories = categoryRepository.findAll();
+		  Integer genreId = collection.getGenre().getId();
+
+		    // そのジャンルに属するカテゴリーを取得
+		  List<Category> categories = categoryRepository.findByGenreId(genreId);
+
 		    
 		  model.addAttribute("datasPage", datasPage);
 		  model.addAttribute("keyword", keyword);
