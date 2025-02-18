@@ -28,7 +28,7 @@
 									</div>
 									<div class="col-md-8">
 										<div th:if="${#fields.hasErrors('name')}"  class="text-danger small mb-2" th:errors="*{name}"></div>
-										<input type="text" class="form-control" th:field="*{name}"  autofocus maxlength="50">
+										<input type="text" class="form-control" th:field="*{name}"   required autofocus maxlength="50">
 									</div>
 									</div>
 									<div>

@@ -29,7 +29,7 @@
 									</div>
 									<div class="col-md-8">
 										<div  th:if="${#fields.hasErrors('name')}" class="text-danger small mb-2"th:errors="*{name}"></div>
-										<input type="text" class="form-control"  th:field="*{name}" autofocus maxlength="255">
+										<input type="text" class="form-control"  th:field="*{name}"  required autofocus maxlength="255">
 									</div>
 								</div>
 								
@@ -49,8 +49,14 @@
                                    
                                 
                                  <div class="form-group d-flex justify-content-center my-4">
-									 <button type="submit" class="btn  shadow-sm w-50 btn-color">編集</button>
-								 </div>                 
+									 <button type="submit" class="btn  shadow-sm w-50 btn-color">更新</button>
+								 </div> 
+								 
+								        <div class="d-flex justify-content-center mt-3">
+    <a th:href="@{/data/__${collectionId}__}" class="btn btn-secondary w-50">戻る</a>
+</div>
+
+         
 							
 							<div>
 								<a href="#" class="samuraitravel-link-danger" data-bs-toggle="modal"

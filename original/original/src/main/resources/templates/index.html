@@ -76,12 +76,14 @@
                                    <tr>
                                        <th scope="col">コレクション名</th>
                                        
-                                       <th scope="col"></th>                                        
+                                       <th scope="col">ジャンル名</th> 
+                                        <th scope="col"></th>                                       
                                    </tr>
                                </thead>   
                                <tbody>                                                     
                                    <tr  th:each="collection : ${collectionPage}">
                                        <td th:text="${collection.getName()}"></td>
+                                       <td th:text="${collection.getGenre.getName()}"></td>
                                        
 <!--                                       <td><a th:href="@{/data/__${collection.getId()}__}">詳細</a></td>                                                                                -->
 <td><a th:href="@{/data/{id}(id=${collection.id})}">詳細</a></td>

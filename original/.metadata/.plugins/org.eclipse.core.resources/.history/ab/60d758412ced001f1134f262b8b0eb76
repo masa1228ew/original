@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+	<head>
+<!--		  <div th:replace="~{fragment :: meta}"></div>   -->
+ <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+           <link th:href="@{/css/style.css}" rel="stylesheet" >	
+		<title>データベース</title>
+	</head>
+	
+	<body>
+		<div class="wrapper">
+			 <div th:replace="~{fragment :: header}"></div>
+			
+			<main>
+				<div class="container pt-4 pb-5">
+					<div class="d-flex justify-content-center">
+					<h1 th:text="${collection.getName()}">データベース名</h1>
+					
+					</div>
+					<div>
+						<h5 th:text="${collection.getGenre.getName()}"></h5>
+					</div>
+					<div class=right>
+						<div>
+							<a th:href="@{/table/__${collection.getId()}__/edit}">編集</a>
+						</div>
+				
+					<div>
+						<a th:href="@{/data/register(collectionId=${collection.id})}">追加</a>
+					</div>
+					<div>
+						<form method="get" class="mb-3 samuraitravel-sort-box"> 
+                                     <input  type="hidden" name="keyword" th:value="${keyword}">
+                                       <input type="hidden" name="page" th:value="${datasPage.number}">                                  
+                                     <select class="form-select form-select-sm" name="order" onChange="this.form.submit();">
+                                         <option value="createdAtDesc" th:selected="${order == 'createdAtDesc'}">新着順</option>                                            
+                                         <option value="wordAsc" th:selected="${order == 'wordAsc'}">五十音順</option>
+                                         <option value="updatedAtAsc" th:selected="${order == 'updatedAtAsc'}">更新順</option>
+                                     </select>   
+                                 </form>   
+					</div>
+					
+					<div>
+                                <button id="randomButton" class="btn btn-primary" th:data-collection-id="${collection.id}">ランダム</button>
+					</div>
+					<div class="modal fade" id="randomDataModal" tabindex="-1" aria-labelledby="randomDataLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="randomDataLabel">ランダムデータ</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="randomDataName">データを取得中...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+					<div>
+                                   <div class="input-group">
+									   <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
+										   <div>
+											   <div>
+	           <select name="categoryId" class="form-select">
+    <option value="">すべてのカテゴリ</option>
+    <option th:each="category : ${categories}" 
+            th:value="${category.id}" 
+            th:text="${category.category}" 
+            th:selected="${category.id == selectedCategory}">
+    </option>
+</select>
+
+            <!-- 検索ボタン -->
+            <button type="submit" class="btn btn-primary">検索</button>
+					</div>
+					</form>
+					 <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
+                                     <input type="text" class="form-control" name="keyword"  th:value="${keyword}" placeholder="名前">
+                                     <button type="submit" class="btn  shadow-sm">検索</button>
+										   </div>
+                                     </form> 
+                                 </div>              
+					</div>
+
+					</div>
+					
+					<table class="table">
+                               <thead>
+                                   <tr>
+                                       <th scope="col">商品名</th>
+                                       <th scope="col">ジャンル名</th>
+                                       <th scope="col">購入金額</th>
+                                       <th scope="col">登録日時</th>
+                                       <th scope="col"></th>                                        
+                                   </tr>
+                               </thead>   
+                               <tbody>                                                     
+                                   <tr th:each="data:${datasPage}">
+                                       <td th:text="${data.getName()}"></td>
+                                        <td th:text="${data.getCategory.getCategory()}"></td>
+                                        <td th:text="${#numbers.formatInteger(data.getPrice(), 0, 'COMMA') + '円'}"></td>
+                                         <td th:text="${#dates.format(data.getUpdatedAt(), 'yyyy-MM-dd')}"></td>
+
+                                       <td><a th:href="@{/data/__${data.getId()}__/edit}">編集</a></td>                                                                                
+                                   </tr>                                      
+                               </tbody>
+                           </table> 
+                            <div th:if="${datasPage.getTotalPages() > 1}" class="d-flex justify-content-center">
+                                <nav aria-label="一覧ページ">
+                                    <ul class="pagination">
+                                        <li class="page-item">
+                                            <span th:if="${datasPage.isFirst()}" class="page-link disabled">前</span>
+                                           
+                                            <a th:unless="${datasPage.isFirst()}" th:href="@{/data/__${collection.getId()}__(page = ${datasPage.getNumber() - 1}, keyword = ${keyword}, categoryId=${selectedCategory})}" class="page-link samuraitravel-page-link">前</a>
+                                        </li>
+                                        <li th:each="i : ${#numbers.sequence(0, datasPage.getTotalPages() - 1)}" class="page-item">
+                                            <span th:if="${i == datasPage.getNumber()}" class="page-link active samuraitravel-active" th:text="${i + 1}"></span>
+                                            
+                                            <a th:unless="${i == datasPage.getNumber()}" th:href="@{/data/__${collection.getId()}__(page = ${i}, keyword = ${keyword}, categoryId=${selectedCategory})}" class="page-link samuraitravel-page-link" th:text="${i + 1}"></a>
+                                        </li>
+                                        <li class="page-item">                        
+                                            <span th:if="${datasPage.isLast()}" class="page-link disabled">次</span>
+                                            
+                                            <a th:unless="${datasPage.isLast()}" th:href="@{/data/__${collection.getId()}__(page = ${datasPage.getNumber() + 1}, keyword = ${keyword}, categoryId=${selectedCategory})}" class="page-link samuraitravel-page-link">次</a>
+                                        </li>
+                                    </ul>
+                                </nav> 
+                            </div>
+                           <div class=right>
+                          <div>
+                          <button id="totalHeightButton" class="btn btn-info" th:data-collection-id="${collection.id}">高さを見る</button>
+                          </div>
+                          <!-- 高さモーダル -->
+<div class="modal fade" id="totalHeightModal" tabindex="-1" aria-labelledby="totalHeightLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+		 <h5 class="modal-title" id="totalHeightLabel">DVD一枚に換算すると</h5>
+<!--        <h5 class="modal-title" id="totalHeightLabel">合計の高さ</h5>-->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="totalHeightText">データを取得中...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+                          <div>
+                          <button id="totalPriceButton" class="btn btn-success" th:data-collection-id="${collection.id}">合計金額</button>
+                          </div>
+                         <!-- 合計金額モーダル -->
+<div class="modal fade" id="totalPriceModal" tabindex="-1" aria-labelledby="totalPriceLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="totalPriceLabel">合計金額</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="totalPriceText">データを取得中...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+<a th:href="@{/}" class="btn btn-secondary w-50">戻る</a>
+                           </div>
+				</div>
+			</main>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		<script th:src="@{/js/preview.js}"></script>  
+	</body>
+</html>

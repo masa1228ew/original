@@ -35,7 +35,7 @@
 									</div>
 									<div class="col-md-8">
 										<div th:if="${#fields.hasErrors('name')}" class="text-danger small mb-2" th:errors="*{name}"></div>
-										<input type="text" class="form-control" th:field="*{name}" autofocus maxlength="255">
+										<input type="text" class="form-control" th:field="*{name}"  required autofocus maxlength="255">
 									</div>
 								</div>
 
@@ -54,12 +54,16 @@
 </div>	
 <div class="col-md-8">	
 <div th:if="${#fields.hasErrors('price')}" class="text-danger small mb-2" th:errors="*{price}"></div>	
-<input type="number" class="form-control" th:field="*{price}">
+<input type="number" class="form-control" th:field="*{price}"  required>
 </div>
         </div>
  <div class="form-group d-flex justify-content-center my-4">
         <button type="submit" class="btn  shadow-sm w-50 btn-color">登録</button>
  </div>
+ 
+    <div class="d-flex justify-content-center mt-3">
+    <a th:href="@{/data/__${collectionId}__}" class="btn btn-secondary w-50">戻る</a>
+</div>
     </form>
 				</div>
 			</main>

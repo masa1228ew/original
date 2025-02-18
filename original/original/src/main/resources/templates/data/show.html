@@ -5,7 +5,77 @@
  <meta charset="UTF-8">
        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-           <link th:href="@{/css/style.css}" rel="stylesheet" >	
+           <link th:href="@{/css/style.css}" rel="stylesheet" >
+           <style>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap; /* 強制改行を防ぐ */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+td:first-child {
+  max-width: 200px; /* 商品名のカラム幅を適度に制限 */
+}
+
+@media screen and (min-width: 769px) {
+    .product-name:hover {
+        white-space: normal;
+        word-break: break-word;
+        overflow: visible;
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        position: absolute;
+        z-index: 10;
+        max-width: 300px;
+    }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip:hover::after {
+  content: attr(data-fulltext);
+  position: absolute;
+  white-space: nowrap;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+@media screen and (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  th, td {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+
+		   </style>	
 		<title>データベース</title>
 	</head>
 	
@@ -19,89 +89,80 @@
 					<h1 th:text="${collection.getName()}">データベース名</h1>
 					
 					</div>
-					<div class=right>
-						<div>
-							<a th:href="@{/table/__${collection.getId()}__/edit}">編集</a>
-						</div>
-				
 					<div>
-						<a th:href="@{/data/register(collectionId=${collection.id})}">追加</a>
+						<h5 th:text="${collection.getGenre.getName()}"></h5>
 					</div>
-					<div>
-						<form method="get" class="mb-3 samuraitravel-sort-box"> 
-                                     <input  type="hidden" name="keyword" th:value="${keyword}">
-                                       <input type="hidden" name="page" th:value="${datasPage.number}">                                  
-                                     <select class="form-select form-select-sm" name="order" onChange="this.form.submit();">
-                                         <option value="createdAtDesc" th:selected="${order == 'createdAtDesc'}">新着順</option>                                            
-                                         <option value="wordAsc" th:selected="${order == 'wordAsc'}">五十音順</option>
-                                         <option value="updatedAtAsc" th:selected="${order == 'updatedAtAsc'}">更新順</option>
-                                     </select>   
-                                 </form>   
-					</div>
-					
-					<div>
-                                <button id="randomButton" class="btn btn-primary" th:data-collection-id="${collection.id}">ランダム</button>
-					</div>
-					<div class="modal fade" id="randomDataModal" tabindex="-1" aria-labelledby="randomDataLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="randomDataLabel">ランダムデータ</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p id="randomDataName">データを取得中...</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-      </div>
+					<div class="container">
+    <div class="row g-2 d-flex justify-content-between flex-wrap">
+        <!-- 編集ボタン -->
+        <div class="col-12 col-md-auto">
+            <a th:href="@{/table/__${collection.getId()}__/edit}" class="btn btn-outline-primary btn-sm w-100">編集</a>
+        </div>
+
+        <!-- 追加ボタン -->
+        <div class="col-12 col-md-auto">
+            <a th:href="@{/data/register(collectionId=${collection.id})}" class="btn btn-outline-success btn-sm w-100">追加</a>
+        </div>
+
+        <!-- 並べ替え -->
+        <div class="col-12 col-md-auto">
+            <form method="get" class="d-flex align-items-center">
+                <select class="form-select form-select-sm me-2" name="order" onChange="this.form.submit();">
+                    <option value="createdAtDesc" th:selected="${order == 'createdAtDesc'}">新着順</option>
+                    <option value="wordAsc" th:selected="${order == 'wordAsc'}">五十音順</option>
+                    <option value="updatedAtAsc" th:selected="${order == 'updatedAtAsc'}">更新順</option>
+                </select>
+            </form>
+        </div>
+
+        <!-- ランダムボタン -->
+        <div class="col-12 col-md-auto">
+            <button id="randomButton" class="btn btn-outline-warning btn-sm w-100" th:data-collection-id="${collection.id}">ランダム</button>
+        </div>
+
+        <!-- カテゴリ検索 -->
+        <div class="col-12 col-md-auto flex-grow-1">
+            <form method="get" th:action="@{/data/__${collection.getId()}__}" class="d-flex align-items-center">
+                <select name="categoryId" class="form-select form-select-sm me-2 w-25">
+                    <option value="">すべてのカテゴリ</option>
+                    <option th:each="category : ${categories}" 
+                            th:value="${category.id}" 
+                            th:text="${category.category}" 
+                            th:selected="${category.id == selectedCategory}">
+                    </option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm">検索</button>
+            </form>
+        </div>
+
+        <!-- 名前検索 -->
+         <div class="col-12 col-md-auto flex-grow-1">
+            <form method="get" th:action="@{/data/__${collection.getId()}__}">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="名前を入力">
+                    <button type="submit" class="btn btn-primary">検索</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
-</div>
-					<div>
-                                   <div class="input-group">
-									   <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
-										   <div>
-											   <div>
-	           <select name="categoryId" class="form-select">
-    <option value="">すべてのカテゴリ</option>
-    <option th:each="category : ${categories}" 
-            th:value="${category.id}" 
-            th:text="${category.category}" 
-            th:selected="${category.id == selectedCategory}">
-    </option>
-</select>
-
-            <!-- 検索ボタン -->
-            <button type="submit" class="btn btn-primary">検索</button>
-					</div>
-					</form>
-					 <form method="get" th:action="@{/data/__${collection.getId()}__}" class="mb-3">
-                                     <input type="text" class="form-control" name="keyword"  th:value="${keyword}" placeholder="名前">
-                                     <button type="submit" class="btn  shadow-sm">検索</button>
-										   </div>
-                                     </form> 
-                                 </div>              
-					</div>
-
-					</div>
-					
+</div>			
 					<table class="table">
                                <thead>
                                    <tr>
-                                       <th scope="col">商品名</th>
-                                       <th scope="col">ジャンル名</th>
-                                       <th scope="col">購入金額</th>
-                                       <th scope="col">登録日時</th>
+                                       <th scope="col" style="width: 40%;">商品名</th>
+                                       <th scope="col" style="width: 20%;">ジャンル名</th>
+                                       <th scope="col" style="width: 15%;">購入金額</th>
+                                       <th scope="col" style="width: 15%;">登録日時</th>
                                        <th scope="col"></th>                                        
                                    </tr>
                                </thead>   
                                <tbody>                                                     
                                    <tr th:each="data:${datasPage}">
-                                       <td th:text="${data.getName()}"></td>
+                                       <td class="product-name" th:text="${data.getName()}" th:title="${data.getName()}"></td>
                                         <td th:text="${data.getCategory.getCategory()}"></td>
-                                         <td th:text="${data.getPrice()}"></td>
-                                          <td th:text="${data.getUpdatedAt()}"></td>
+                                        <td th:text="${#numbers.formatInteger(data.getPrice(), 0, 'COMMA') + '円'}"></td>
+                                         <td th:text="${#dates.format(data.getUpdatedAt(), 'yyyy-MM-dd')}"></td>
+
                                        <td><a th:href="@{/data/__${data.getId()}__/edit}">編集</a></td>                                                                                
                                    </tr>                                      
                                </tbody>
@@ -169,6 +230,7 @@
     </div>
   </div>
 </div>
+<a th:href="@{/}" class="btn btn-secondary w-50">戻る</a>
                            </div>
 				</div>
 			</main>

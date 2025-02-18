@@ -17,7 +17,8 @@ public class DatasEditForm {
 	 @Size(max = 255, message = "アイテム名は255文字以内で入力してください")
 	   @NotBlank
 	    private String name;
-	   
+	  
+
 	   
 	  @NotNull(message = "価格を入力してください")
 	    private Integer price = 0; // デフォルト値を設定
