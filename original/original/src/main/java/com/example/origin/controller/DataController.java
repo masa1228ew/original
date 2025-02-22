@@ -180,30 +180,49 @@ public class DataController {
 	    
 	    @GetMapping("/{id}/edit")
 	    public String edit(@PathVariable(name = "id") int id, Model model) {
-	    	Datas datas = datasRepository.getReferenceById(id);
-	    	
-	    	DatasEditForm datasEditForm = new DatasEditForm(datas.getId(),datas.getName(),datas.getPrice(),datas.getCollection());
-	    	DatasForm datasForm = new DatasForm();
-	    	datasForm.setCollectionId(datas.getCollection().getId());
-	    	model.addAttribute("datasEditForm", datasEditForm);
-	    	model.addAttribute("collectionId", datas.getCollection().getId());
-	    	model.addAttribute("datas", datas);
-	    	
-	    	return "data/edit";
+	        Datas datas = datasRepository.getReferenceById(id);
+
+	        // ✅ コレクションのジャンルIDを取得
+	        Integer genreId = datas.getCollection().getGenre().getId();
+
+	        // ✅ そのジャンルIDに紐づくカテゴリー一覧を取得
+	        List<Category> categories = categoryRepository.findByGenreId(genreId);
+
+	        // ✅ `DatasEditForm` の作成
+	        DatasEditForm datasEditForm = new DatasEditForm(
+	            datas.getId(),
+	            datas.getName(),
+	            datas.getPrice(),
+	            datas.getCollection(),
+	            datas.getCategory().getId()
+	        );
+
+	        model.addAttribute("datasEditForm", datasEditForm);
+	        model.addAttribute("collectionId", datas.getCollection().getId());
+	        model.addAttribute("datas", datas);
+	        model.addAttribute("categories", categories); // 🔥 このジャンルに対応するカテゴリー一覧を渡す
+
+	        return "data/edit";
 	    }
-	    
-	    @PostMapping("/{id}/update")
-	    public String update(@ModelAttribute @Validated DatasEditForm datasEditForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
-	        if (bindingResult.hasErrors()) {
-	            return "data/edit";
-	        }
 	        
-	        datasService.update(datasEditForm);
-	        redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
-	        
-	        redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
-	        return "redirect:/data/"+ datasEditForm.getCollectionId().getId();
-	    }    
+	        @PostMapping("/{id}/update")
+	        public String update(@ModelAttribute @Validated DatasEditForm datasEditForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
+	            if (bindingResult.hasErrors()) {
+	                return "data/edit";
+	            }
+
+	            Datas datas = datasRepository.getReferenceById(datasEditForm.getId());
+	            datas.setName(datasEditForm.getName());
+	            datas.setPrice(datasEditForm.getPrice());
+	            datas.setCollection(datasEditForm.getCollectionId());
+	            datas.setCategory(categoryRepository.getReferenceById(datasEditForm.getCategoryId())); // ✅ カテゴリを更新
+
+	            datasRepository.save(datas); // ✅ 更新を保存
+
+	            redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
+	            
+	            return "redirect:/data/"+ datasEditForm.getCollectionId().getId();
+	        } 
 	    
 	    @GetMapping("/random")
 	    public ResponseEntity<?> getRandomData(@RequestParam("collectionId") Integer collectionId) {

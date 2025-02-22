@@ -2,6 +2,19 @@ html {
  font-size: 14px;
 }
 
+@media (max-width: 768px) {
+    .navbar-collapse {
+        display: block !important;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out;
+    }
+
+    .navbar-collapse.show {
+        max-height: 500px; /* 必要に応じて調整 */
+    }
+}
+
 body {
  font-family: 'Noto Sans JP', sans-serif;  
 }

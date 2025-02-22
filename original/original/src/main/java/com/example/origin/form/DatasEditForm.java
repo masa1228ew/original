@@ -11,18 +11,19 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DatasEditForm {
-	 @NotNull
-	    private Integer id;   
-	 
-	 @Size(max = 255, message = "アイテム名は255文字以内で入力してください")
-	   @NotBlank
-	    private String name;
-	  
+    @NotNull
+    private Integer id;   
 
-	   
-	  @NotNull(message = "価格を入力してください")
-	    private Integer price = 0; // デフォルト値を設定
-	   
-	   @NotNull
-	    private Collection collectionId;
+    @Size(max = 255, message = "アイテム名は255文字以内で入力してください")
+    @NotBlank
+    private String name;
+
+    @NotNull(message = "価格を入力してください")
+    private Integer price = 0;
+
+    @NotNull
+    private Collection collectionId;
+
+    @NotNull(message = "ジャンルを選択してください")
+    private Integer categoryId; // ✅ 追加
 }
