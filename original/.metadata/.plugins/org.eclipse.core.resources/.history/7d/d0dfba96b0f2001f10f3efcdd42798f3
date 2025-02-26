@@ -1,0 +1,43 @@
+package com.example.origin.form;
+
+import com.example.origin.entity.Collection;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@NoArgsConstructor // ✅ 引数なしのコンストラクタを追加
+public class DatasEditForm {
+    @NotNull
+    private Integer id;   
+
+    @Size(max = 255, message = "アイテム名は255文字以内で入力してください")
+    @NotBlank
+    private String name;
+
+    
+    private Integer price = 0;
+
+    @NotNull
+    private Collection collectionId;
+
+    @NotNull(message = "ジャンルを選択してください")
+    private Integer categoryId;
+
+ // ✅ 未購入チェックボックスの状態を保持するフィールド
+    private Boolean notPurchased;
+
+ // ✅ コンストラクタ修正
+    public DatasEditForm(Integer id, String name, Integer price, Collection collectionId, Integer categoryId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.collectionId = collectionId;
+        this.categoryId = categoryId;
+        this.notPurchased = (price == null); // ← 金額が null ならチェックを入れる
+    }
+}
+

@@ -1,5 +1,7 @@
 package com.example.origin.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.example.origin.entity.Category;
@@ -64,5 +66,13 @@ public class DatasService {
 	                    
 	        datasRepository.save(datas);
 	    }  
-	
+	  public Datas findById(Integer id) {
+	        Optional<Datas> dataOpt = datasRepository.findById(id);
+	        return dataOpt.orElse(null);
+	    }
+
+	    // ✅ データを保存（新規・更新どちらも対応）
+	    public Datas save(Datas datas) {
+	        return datasRepository.save(datas);
+	    }
 }

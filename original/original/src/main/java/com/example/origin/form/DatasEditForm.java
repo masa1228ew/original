@@ -5,11 +5,11 @@ import com.example.origin.entity.Collection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@NoArgsConstructor // ✅ 引数なしのコンストラクタを追加
 public class DatasEditForm {
     @NotNull
     private Integer id;   
@@ -18,12 +18,26 @@ public class DatasEditForm {
     @NotBlank
     private String name;
 
-    @NotNull(message = "価格を入力してください")
+    
     private Integer price = 0;
 
     @NotNull
     private Collection collectionId;
 
     @NotNull(message = "ジャンルを選択してください")
-    private Integer categoryId; // ✅ 追加
+    private Integer categoryId;
+
+ // ✅ 未購入チェックボックスの状態を保持するフィールド
+    private Boolean notPurchased;
+
+ // ✅ コンストラクタ修正
+    public DatasEditForm(Integer id, String name, Integer price, Collection collectionId, Integer categoryId, boolean notPurchased) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.collectionId = collectionId;
+        this.categoryId = categoryId;
+        this.notPurchased = notPurchased;
+    }
 }
+

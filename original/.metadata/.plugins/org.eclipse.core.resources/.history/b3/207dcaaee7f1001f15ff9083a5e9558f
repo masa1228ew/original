@@ -1,0 +1,279 @@
+package com.example.origin.controller;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.origin.entity.Category;
+import com.example.origin.entity.Collection;
+import com.example.origin.entity.Datas;
+import com.example.origin.form.DatasEditForm;
+import com.example.origin.form.DatasForm;
+import com.example.origin.repository.CategoryRepository;
+import com.example.origin.repository.CollectionRepository;
+import com.example.origin.repository.DatasRepository;
+import com.example.origin.repository.GenreRepository;
+import com.example.origin.service.DatasService;
+import com.example.origin.service.GenreService;
+
+@Controller
+@RequestMapping("/data")
+public class DataController {
+	private final DatasRepository datasRepository;
+	private final CollectionRepository collectionRepository;
+	private final GenreRepository genreRepository;
+	private final CategoryRepository categoryRepository;
+	private final DatasService datasService;
+	private final GenreService genreService;
+	
+	public DataController(DatasRepository datasRepository
+						,CollectionRepository collectionRepository
+						,GenreRepository genreRepository
+						,DatasService datasService
+						,GenreService genreService
+						,CategoryRepository categoryRepository) {
+		this.datasRepository = datasRepository;
+		this.collectionRepository = collectionRepository;
+		this.genreRepository = genreRepository;
+		this.datasService = datasService;
+		this.genreService = genreService;
+		this.categoryRepository = categoryRepository;
+	}
+	  @GetMapping("/{id}")
+	    public String index(@PathVariable(name = "id") Integer id,Model model
+	    					, @RequestParam(required = false) Integer categoryId
+	    					, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC)Pageable pageable
+	    					,@RequestParam(name = "keyword", required = false) String keyword
+	    					,@RequestParam(name = "order", required = false, defaultValue = "createdAtDesc") String order
+	    			        ) {
+		  System.out.println("テスト");
+		
+		  Sort sort;
+	        switch (order) {
+	            case "wordAsc":
+	                sort = Sort.by(Sort.Order.asc("name"));  // 五十音順（名前順）
+	                break;
+	            case "updatedAtAsc":
+	                sort = Sort.by(Sort.Order.desc("updatedAt"));  // 更新順
+	                break;
+	            default:
+	                sort = Sort.by(Sort.Order.desc("createdAt"));  // 新着順（デフォルト）
+	                break;
+	        }
+
+	        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+	        
+//		  Page<Datas> datasPage = datasRepository.findAll(pageable);
+		  Page<Datas> datasPage;
+		  
+		  System.out.println("テスト2");
+		 
+//		  model.addAttribute("datasPage", datasPage);
+		  
+		  System.out.println("テスト3");
+		  if (keyword != null && !keyword.isEmpty()) {
+//	            datasPage = datasRepository.findByNameLike("%" + keyword + "%", pageable);
+			  datasPage = datasRepository.findByCollectionIdAndNameContaining(id, keyword, pageable);
+	        } else {
+//	            datasPage = datasRepository.findAll(pageable);
+	        	datasPage = datasRepository.findByCollectionId(id, pageable);
+	        }  
+		  
+		  Collection collection = collectionRepository.getReferenceById(id);
+		  if (categoryId != null) {
+		        datasPage = datasRepository.findByCollectionIdAndCategoryIdAndNameContaining(collection.getId(), categoryId, keyword != null ? keyword : "", pageable);
+		    } else {
+		        datasPage = datasRepository.findByCollectionIdAndNameContaining(collection.getId(), keyword != null ? keyword : "", pageable);
+		    }
+
+//		    List<Category> categories = categoryRepository.findAll();
+		  Integer genreId = collection.getGenre().getId();
+
+		    // そのジャンルに属するカテゴリーを取得
+		  List<Category> categories = categoryRepository.findByGenreId(genreId);
+
+		    
+		  model.addAttribute("datasPage", datasPage);
+		  model.addAttribute("keyword", keyword);
+		  model.addAttribute("categories", categories);
+		  model.addAttribute("order", order);
+		  model.addAttribute("collection", collection); 
+		  model.addAttribute("selectedCategory", categoryId);
+//		  System.out.println(datasPage);
+	        return "data/show";
+	    }   
+	  
+//	  @PostMapping("/create")
+//	    public Datas createData(
+//	            @RequestParam String dataName,
+//	            @RequestParam Integer collectionId,
+//	            @RequestParam Integer categoryId,
+//	            @RequestParam Integer price
+//	    ) {
+//	        return datasService.createData(dataName, collectionId, categoryId, price);
+//	    }
+	  
+	  @GetMapping("/register")
+	    public String showForm(@RequestParam(name = "collectionId") Integer collectionId, Model model) {
+		  System.out.println("テスト");
+	        // コレクションIDでコレクションを取得
+	        Collection collection = collectionRepository.findById(collectionId)
+	                .orElseThrow(() -> new IllegalArgumentException("Invalid Collection ID"));
+	        System.out.println("テスト2");
+	        // ジャンルIDを取得
+	        Integer genreId = collection.getGenre().getId();
+
+	        // ジャンルIDに基づくカテゴリを取得
+	        List<Category> categories = categoryRepository.findByGenreId(genreId);
+	        System.out.println("テスト３");
+	        DatasForm datasForm = new DatasForm();
+	        datasForm.setCollectionId(collectionId);
+	        System.out.println("テスト４");
+	        System.out.println(collectionId);
+	        // モデルにデータを渡す
+	        model.addAttribute("categories", categories);
+	        model.addAttribute("collectionId", collectionId);
+	        model.addAttribute("datasForm", datasForm);
+	        return "data/register";
+	    }
+
+	  @PostMapping("/register")
+	  public String register(@ModelAttribute DatasForm datasForm) {
+	      // フォームからの値をチェック
+	      if ("null".equals(datasForm.getPrice())) {
+	          datasForm.setPrice(null); // 文字列の "null" を本当の null に変換
+	      }
+	      
+	      // サービスに保存
+	      datasService.createData(datasForm);
+	      
+	      return "redirect:/data/" + datasForm.getCollectionId();
+	  }
+//	  @GetMapping("/register")
+//	    public String register() {
+//	        return "data/register";
+//	    }  
+	    
+	    @GetMapping("/{id}/edit")
+	    public String edit(@PathVariable(name = "id") int id, Model model) {
+	        Datas datas = datasRepository.getReferenceById(id);
+
+	        // ✅ コレクションのジャンルIDを取得
+	        Integer genreId = datas.getCollection().getGenre().getId();
+
+	        // ✅ そのジャンルIDに紐づくカテゴリー一覧を取得
+	        List<Category> categories = categoryRepository.findByGenreId(genreId);
+
+	        // ✅ `DatasEditForm` の作成
+	        DatasEditForm datasEditForm = new DatasEditForm(
+	            datas.getId(),
+	            datas.getName(),
+	            datas.getPrice(),
+	            datas.getCollection(),
+	            datas.getCategory().getId()
+	        );
+
+	        model.addAttribute("datasEditForm", datasEditForm);
+	        model.addAttribute("collectionId", datas.getCollection().getId());
+	        model.addAttribute("datas", datas);
+	        model.addAttribute("categories", categories); // 🔥 このジャンルに対応するカテゴリー一覧を渡す
+
+	        return "data/edit";
+	    }
+	        
+	        @PostMapping("/{id}/update")
+	        public String update(@ModelAttribute @Validated DatasEditForm datasEditForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
+	            if (bindingResult.hasErrors()) {
+	                return "data/edit";
+	            }
+
+	            Datas datas = datasRepository.getReferenceById(datasEditForm.getId());
+	            datas.setName(datasEditForm.getName());
+	            datas.setPrice(datasEditForm.getPrice());
+	            datas.setCollection(datasEditForm.getCollectionId());
+	            datas.setCategory(categoryRepository.getReferenceById(datasEditForm.getCategoryId())); // ✅ カテゴリを更新
+
+	            datasRepository.save(datas); // ✅ 更新を保存
+
+	            redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
+	            
+	            return "redirect:/data/"+ datasEditForm.getCollectionId().getId();
+	        } 
+	    
+	    @GetMapping("/random")
+	    public ResponseEntity<?> getRandomData(@RequestParam("collectionId") Integer collectionId) {
+	        Optional<Datas> randomData = datasRepository.findRandomDataByCollectionId(collectionId);
+
+	        if (randomData.isPresent()) {
+	            return ResponseEntity.ok(randomData.get());
+	        } else {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("データが見つかりませんでした。");
+	        }
+	    }
+	    
+	    
+	    @GetMapping("/total-price")
+	    public ResponseEntity<?> getTotalPrice(@RequestParam("collectionId") Integer collectionId) {
+	        Integer totalPrice = datasRepository.getTotalPriceByCollectionId(collectionId);
+	        if (totalPrice != null) {
+	            return ResponseEntity.ok(totalPrice);
+	        } else {
+	            return ResponseEntity.ok(0); // データがない場合は 0 を返す
+	        }
+	    }
+	    
+	    @GetMapping("/total-height")
+	    public ResponseEntity<?> getTotalHeight(@RequestParam("collectionId") Integer collectionId) {
+	        Integer count = datasRepository.countByCollectionId(collectionId);
+	        if (count != null && count > 0) {
+	            double totalHeight = (count * 15) / 10.0; // 15mm * 個数 → cm に変換
+	            return ResponseEntity.ok(totalHeight);
+	        } else {
+	            return ResponseEntity.ok(0.0); // データがない場合は 0.0cm を返す
+	        }
+	    }
+	    
+	    @PostMapping("/{id}/delete")
+	    public String delete(@PathVariable(name = "id") Integer id, RedirectAttributes redirectAttributes) {
+		 System.out.println("テストデリート");
+		 Integer collectionId = datasRepository.getReferenceById(id).getCollection().getId();
+	        datasRepository.deleteById(id);
+	        System.out.println("テスト2");
+//	        Collection collection = collectionRepository.getReferenceById(id);
+	        redirectAttributes.addFlashAttribute("successMessage", "データベースをを削除しました。");
+	        
+	        return "redirect:/data/" + collectionId;
+//	        return "index";
+	    }    
+	    
+	  @GetMapping("/high")
+	    public String high() {
+	        return "data/high";
+	    }  
+	  
+	  @GetMapping("/amount")
+	    public String amount() {
+	        return "data/amount";
+	    }  
+	  
+	  
+}

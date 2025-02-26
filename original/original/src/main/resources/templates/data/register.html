@@ -48,15 +48,31 @@
                     th:text="${category.category}">
             </option>
         </select>
-        <div class="form-group row mb-3">
-        <div class="col-md-4">	
-<label for="price" class="col-form-label text-md-left fw-bold">購入金額</label>	
-</div>	
-<div class="col-md-8">	
-<div th:if="${#fields.hasErrors('price')}" class="text-danger small mb-2" th:errors="*{price}"></div>	
-<input type="number" class="form-control" th:field="*{price}"  required>
+        <!-- 購入金額の入力欄 -->
+<div class="form-group row mb-3">
+    <div class="col-md-4">
+        <label for="price" class="col-form-label text-md-left fw-bold">購入金額</label>
+    </div>
+    <div class="col-md-8">
+        <div th:if="${#fields.hasErrors('price')}" class="text-danger small mb-2" th:errors="*{price}"></div>
+        <input type="number" id="priceInput" class="form-control" th:field="*{price}" min="0" oninput="validatePrice()">
+<div id="priceError" class="text-danger small"></div> <!-- エラーメッセージ用 -->
+        <!-- ✅ price が null の場合、フォーム送信時に null を送るための hidden input -->
+        <input type="hidden" id="priceHidden" name="price" value="">
+    </div>
 </div>
-        </div>
+
+<!-- ✅ 未購入のチェックボックス -->
+<div class="form-group row mb-3">
+    <div class="col-md-4">
+        <label for="notPurchased" class="col-form-label text-md-left fw-bold">未購入</label>
+    </div>
+    <div class="col-md-8">
+        <input type="checkbox" id="notPurchased" name="notPurchased"
+               th:checked="${data != null and data.price == null}"
+               onclick="togglePriceInput()">
+    </div>
+</div>
  <div class="form-group d-flex justify-content-center my-4">
         <button type="submit" class="btn  shadow-sm w-50 btn-color">登録</button>
  </div>
@@ -79,6 +95,34 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+  function togglePriceInput() {
+        let checkbox = document.getElementById('notPurchased');
+        let priceInput = document.getElementById('priceInput');
+        let priceHidden = document.getElementById('priceHidden');
+
+        if (checkbox.checked) {
+            priceInput.value = ''; // 表示上は空にする
+            priceInput.disabled = true;
+            priceHidden.value = ''; // 🔽 送信時に空文字を送る（null になるように）
+        } else {
+            priceInput.disabled = false;
+            priceHidden.value = ''; // 🔽 通常の値を送る
+        }
+    }
+
+function validatePrice() {
+    let priceInput = document.getElementById('priceInput');
+    let priceError = document.getElementById('priceError');
+
+    if (priceInput.value < 0) {
+        alert("購入金額は0以上にしてください！"); // アラートを表示
+        priceError.textContent = "購入金額は0以上にしてください。"; // エラーメッセージを表示
+        priceInput.value = ""; // 入力をクリア
+    } else {
+        priceError.textContent = ""; // エラーメッセージを消す
+    }
+}
 </script>
  <script th:src="@{/js/logout.js}" ></script>
 	</body>

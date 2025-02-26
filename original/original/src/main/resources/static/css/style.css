@@ -9,6 +9,13 @@ html {
         overflow: hidden;
         transition: max-height 0.3s ease-in-out;
     }
+    
+     select[name="categoryId"] {
+    flex-grow: 1;
+    width: 100%;
+  }
+  
+}
 
     .navbar-collapse.show {
         max-height: 500px; /* 必要に応じて調整 */

@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -158,71 +157,98 @@ public class DataController {
 	        return "data/register";
 	    }
 
-	    @PostMapping("/register")
-	    public String submitForm(@ModelAttribute @Valid DatasForm datasForm, BindingResult result, Model model) {
-	        // フォームデータを取得して処理
-//	        Integer collection = datasForm.getCollection();
-//	        Integer category = datasForm.getCategory();
+	  @PostMapping("/register")
+	  public String register(@ModelAttribute DatasForm datasForm) {
+	      // "null" という文字列が送られてきた場合は、本当の null に変換
+	      if ("null".equals(datasForm.getPrice())) {
+	          datasForm.setPrice(null);
+	      }
 
-	        // 必要な処理を実行（例：データベースへの保存）
-	        // datasService.saveData(collectionId, categoryId, ...);
-
-	    	
-	        datasService.createData(datasForm);
-	        Integer collectionId = datasForm.getCollectionId();
-	        
-	        return "redirect:/data/" + collectionId;
-	    }
+	      datasService.createData(datasForm);
+	      return "redirect:/data/" + datasForm.getCollectionId();
+	  }
 //	  @GetMapping("/register")
 //	    public String register() {
 //	        return "data/register";
 //	    }  
 	    
-	    @GetMapping("/{id}/edit")
-	    public String edit(@PathVariable(name = "id") int id, Model model) {
-	        Datas datas = datasRepository.getReferenceById(id);
+	  @GetMapping("/{id}/edit")
+	  public String editData(@PathVariable Integer id, Model model) {
+//	      Datas datas = datasService.findById(id);
+		  
+		  Datas datas = datasRepository.getReferenceById(id);
+		  
+		  if (datas == null) {
+	          return "redirect:/data"; // ID が見つからない場合はリダイレクト
+	      }
 
-	        // ✅ コレクションのジャンルIDを取得
-	        Integer genreId = datas.getCollection().getGenre().getId();
+	      boolean notPurchased = (datas.getPrice() == null);
 
-	        // ✅ そのジャンルIDに紐づくカテゴリー一覧を取得
-	        List<Category> categories = categoryRepository.findByGenreId(genreId);
+	      DatasEditForm form = new DatasEditForm(
+	          datas.getId(),
+	          datas.getName(),
+	          datas.getPrice(),
+	          datas.getCollection(),
+	          datas.getCategory().getId(),
+	          notPurchased // ✅ 未購入チェック
+	      );
 
-	        // ✅ `DatasEditForm` の作成
-	        DatasEditForm datasEditForm = new DatasEditForm(
-	            datas.getId(),
-	            datas.getName(),
-	            datas.getPrice(),
-	            datas.getCollection(),
-	            datas.getCategory().getId()
-	        );
+	      model.addAttribute("datasEditForm", form);
+	      model.addAttribute("collectionId", datas.getCollection().getId());
+	      model.addAttribute("datas", datas); // ✅ 追加する
+	      model.addAttribute("categories", categoryRepository.findAll());
 
-	        model.addAttribute("datasEditForm", datasEditForm);
-	        model.addAttribute("collectionId", datas.getCollection().getId());
-	        model.addAttribute("datas", datas);
-	        model.addAttribute("categories", categories); // 🔥 このジャンルに対応するカテゴリー一覧を渡す
-
-	        return "data/edit";
-	    }
+	      return "data/edit";
+	  }
 	        
-	        @PostMapping("/{id}/update")
-	        public String update(@ModelAttribute @Validated DatasEditForm datasEditForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {        
-	            if (bindingResult.hasErrors()) {
-	                return "data/edit";
-	            }
+	  @PostMapping("/{id}/update")
+	  public String updateData(
+	          @PathVariable Integer id,
+	          @Valid @ModelAttribute("datasEditForm")  DatasEditForm form,
+	          BindingResult result,
+	          Model model) {
+	      
+	      // バリデーションエラーがあればフォームを再表示
+	      if (result.hasErrors()) {
+	          System.out.println("🔴 バリデーションエラー: " + result.getAllErrors());
+	          return "data/edit";
+	      }
 
-	            Datas datas = datasRepository.getReferenceById(datasEditForm.getId());
-	            datas.setName(datasEditForm.getName());
-	            datas.setPrice(datasEditForm.getPrice());
-	            datas.setCollection(datasEditForm.getCollectionId());
-	            datas.setCategory(categoryRepository.getReferenceById(datasEditForm.getCategoryId())); // ✅ カテゴリを更新
+	      System.out.println("✅ 更新処理開始: id=" + id);
+	      System.out.println("📝 受け取ったフォームの categoryId = " + form.getCategoryId());
 
-	            datasRepository.save(datas); // ✅ 更新を保存
+	      // データ取得
+	      Datas datas = datasService.findById(id);
+	      if (datas == null) {
+	          System.out.println("⚠️ ID に該当するデータが見つかりません");
+	          return "redirect:/data";
+	      }
 
-	            redirectAttributes.addFlashAttribute("successMessage", "情報を編集しました。");
-	            
-	            return "redirect:/data/"+ datasEditForm.getCollectionId().getId();
-	        } 
+	      // データ更新
+	      datas.setName(form.getName());
+	      datas.setPrice(form.getPrice());
+	      datas.setCollection(form.getCollectionId());
+
+	      // カテゴリが null でないことを確認
+	      if (form.getCategoryId() != null) {
+	          datas.setCategory(categoryRepository.getReferenceById(form.getCategoryId()));
+	          System.out.println("✅ カテゴリを更新: " + form.getCategoryId());
+	      } else {
+	          System.out.println("⚠️ categoryId が null なので更新しません");
+	      }
+
+	      // 「未購入」チェックがついていた場合の処理
+	      if (Boolean.TRUE.equals(form.getNotPurchased())) {
+	          datas.setPrice(null); // ✅ チェックが入っていたら価格を null にする
+	          System.out.println("✅ 未購入チェック適用: price = null");
+	      }
+
+	      // 更新を保存
+	      datasService.save(datas);
+	      System.out.println("✅ 更新完了");
+
+	      return "redirect:/data/"+ form.getCollectionId().getId();
+	  }
 	    
 	    @GetMapping("/random")
 	    public ResponseEntity<?> getRandomData(@RequestParam("collectionId") Integer collectionId) {

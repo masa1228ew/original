@@ -17,8 +17,6 @@ public class DatasForm {
 
 	    @NotNull
 	    private Integer categoryId;
-
-	    @NotNull(message = "価格を入力してください")
-	    private Integer price = 0; // デフォルト値を設定
-
+	    
+	    private Integer price;
 }

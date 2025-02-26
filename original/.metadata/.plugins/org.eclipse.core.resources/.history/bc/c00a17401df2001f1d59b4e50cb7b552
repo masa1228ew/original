@@ -1,0 +1,39 @@
+package com.example.origin.form;
+
+import com.example.origin.entity.Collection;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class DatasEditForm {
+    @NotNull
+    private Integer id;   
+
+    @Size(max = 255, message = "アイテム名は255文字以内で入力してください")
+    @NotBlank
+    private String name;
+
+    @NotNull(message = "価格を入力してください")
+    private Integer price = 0;
+
+    @NotNull
+    private Collection collectionId;
+
+    @NotNull(message = "ジャンルを選択してください")
+    private Integer categoryId; 
+
+    // 🔥 追加: 引数を受け取るコンストラクタ
+    public DatasEditForm(Integer id, String name, Integer price, Collection collectionId, Integer categoryId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.collectionId = collectionId;
+        this.categoryId = categoryId;
+    }
+}
+
